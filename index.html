@@ -14,7 +14,7 @@
         .staff-container {
             position: relative;
             width: 100%;
-            height: 280px; /* Aumentamos la altura para las nuevas líneas adicionales */
+            height: 300px;
             background-color: #f8fafc;
             border-radius: 0.5rem;
             box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
@@ -61,7 +61,7 @@
             position: absolute;
             inset: 0;
             display: grid;
-            grid-template-columns: 80px repeat(8, 1fr); /* Le dimos más ancho a la primera columna (de 60px a 80px) */
+            grid-template-columns: 80px repeat(8, 1fr);
             padding: 20px 0;
             z-index: 10;
         }
@@ -70,13 +70,13 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 240px; /* Usamos píxeles absolutos enormes para forzar su tamaño en cualquier navegador */
+            font-size: 240px; 
             line-height: 0; 
             font-family: 'Times New Roman', serif; 
             color: #334155;
             user-select: none;
-            transform: translateY(-15px); /* Ajuste milimétrico hacia arriba para que el centro abrace la línea de Sol */
-            margin-left: 10px; /* Separamos un poquito del borde izquierdo */
+            transform: translateY(-15px);
+            margin-left: 10px;
         }
 
         .note-column {
@@ -129,7 +129,6 @@
 </head>
 <body class="min-h-screen flex flex-col">
 
-    <!-- Header -->
     <header class="bg-slate-900 border-b border-slate-800 p-6 shadow-lg">
         <div class="max-w-4xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
             <div>
@@ -147,10 +146,8 @@
         </div>
     </header>
 
-    <!-- Main Content -->
     <main class="flex-grow max-w-4xl mx-auto w-full p-6">
         
-        <!-- SECTION 1: NOMENCLATURA -->
         <section id="sec-nom" class="block">
             <div class="bg-slate-800 rounded-2xl p-6 md:p-8 shadow-xl border border-slate-700">
                 <div class="flex justify-between items-center mb-6">
@@ -164,8 +161,7 @@
                     <h3 class="text-3xl font-extrabold text-center text-cyan-400 mb-8" id="nom-scale-name">Escala Jónica</h3>
                     
                     <div class="grid grid-cols-4 md:grid-cols-8 gap-3" id="nom-inputs-container">
-                        <!-- Generado por JS -->
-                    </div>
+                        </div>
                 </div>
 
                 <div id="nom-feedback" class="hidden mb-6 p-4 rounded-lg text-center font-semibold text-lg"></div>
@@ -181,7 +177,6 @@
             </div>
         </section>
 
-        <!-- SECTION 2: PENTAGRAMA -->
         <section id="sec-pent" class="hidden">
             <div class="bg-slate-800 rounded-2xl p-6 md:p-8 shadow-xl border border-slate-700">
                 <div class="flex justify-between items-center mb-6">
@@ -195,36 +190,17 @@
                 <div class="bg-slate-900/50 rounded-xl p-6 border border-slate-700/50 mb-8">
                     <h3 class="text-2xl font-extrabold text-center text-blue-400 mb-6" id="pent-challenge-name">Escala Dórica en Re (D)</h3>
                     
-                    <!-- Pentagrama Interactivo -->
                     <div class="staff-container" id="staff-container">
                         <div class="staff-lines">
-                            <div class="staff-row"></div> <!-- C6 -->
-                            <div class="staff-row"></div> <!-- B5 -->
-                            <div class="staff-row"></div> <!-- A5 -->
-                            <div class="staff-row"></div> <!-- G5 -->
-                            <div class="staff-row"><div class="staff-line"></div></div> <!-- F5 -->
-                            <div class="staff-row"></div> <!-- E5 -->
-                            <div class="staff-row"><div class="staff-line"></div></div> <!-- D5 -->
-                            <div class="staff-row"></div> <!-- C5 -->
-                            <div class="staff-row"><div class="staff-line"></div></div> <!-- B4 -->
-                            <div class="staff-row"></div> <!-- A4 -->
-                            <div class="staff-row"><div class="staff-line"></div></div> <!-- G4 -->
-                            <div class="staff-row"></div> <!-- F4 -->
-                            <div class="staff-row"><div class="staff-line"></div></div> <!-- E4 -->
-                            <div class="staff-row"></div> <!-- D4 -->
-                            <div class="staff-row"></div> <!-- C4 -->
-                            <div class="staff-row"></div> <!-- B3 -->
-                        </div>
+                            <div class="staff-row"></div> <div class="staff-row"></div> <div class="staff-row"></div> <div class="staff-row"></div> <div class="staff-row"><div class="staff-line"></div></div> <div class="staff-row"></div> <div class="staff-row"><div class="staff-line"></div></div> <div class="staff-row"></div> <div class="staff-row"><div class="staff-line"></div></div> <div class="staff-row"></div> <div class="staff-row"><div class="staff-line"></div></div> <div class="staff-row"></div> <div class="staff-row"><div class="staff-line"></div></div> <div class="staff-row"></div> <div class="staff-row"></div> <div class="staff-row"></div> <div class="staff-row"></div> </div>
                         
                         <div class="staff-grid" id="staff-grid">
                             <div class="clef-container">𝄞</div>
                         </div>
                     </div>
 
-                    <!-- NUEVA SECCIÓN: Fórmula bajo el pentagrama -->
                     <div id="pent-formula-container" style="display: grid; grid-template-columns: 80px repeat(8, 1fr);" class="mt-4 text-center font-mono text-[10px] md:text-sm font-bold">
-                        <!-- Generado por JS -->
-                    </div>
+                        </div>
                     
                 </div>
 
@@ -248,13 +224,12 @@
 
     </main>
 
-    <!-- Pie de página (Footer) -->
     <footer class="py-8 text-center text-slate-500 text-sm border-t border-slate-800 mt-auto bg-slate-900/50">
         <p>Desarrollado para la clase de Armonía &bull; <strong class="text-slate-400">Profesor Marcelo Melipil J.</strong></p>
     </footer>
 
     <script>
-        // Lógica de navegación
+        // --- NAVEGACIÓN ---
         function switchTab(tab) {
             const secNom = document.getElementById('sec-nom');
             const secPent = document.getElementById('sec-pent');
@@ -366,12 +341,11 @@
         }
 
         // --- MODO PENTAGRAMA ---
-        const filasPentagrama = 16; 
+        const filasPentagrama = 17; // De C6 a A3
         const colsPentagrama = 8;
         
         let staffState = Array(colsPentagrama).fill(null);
 
-        // Diccionario para vincular el nombre de la escala con su fórmula
         const formulasPorModo = {
             "Jónico": ["1", "T9", "3", "S4", "5", "T13", "7", "1"],
             "Dórico": ["1", "T9", "b3", "T11", "5", "S6", "b7", "1"],
@@ -384,9 +358,8 @@
             "Mixolidio b9 b13": ["1", "Tb9", "3", "S4", "5", "Tb13", "b7", "1"]
         };
 
-        // Valores MIDI y visuales para el generador
         const rowToMidi = {
-            15: 59, 14: 60, 13: 62, 12: 64, 11: 65, 10: 67, 9: 69,
+            16: 57, 15: 59, 14: 60, 13: 62, 12: 64, 11: 65, 10: 67, 9: 69,
             8: 71, 7: 72, 6: 74, 5: 76, 4: 77, 3: 79, 2: 81, 1: 83, 0: 84
         };
 
@@ -409,14 +382,13 @@
             { name: "E", noteIndex: 2, row: 12, baseMidi: 64 },
             { name: "F", noteIndex: 3, row: 11, baseMidi: 65 },
             { name: "G", noteIndex: 4, row: 10, baseMidi: 67 },
-            { name: "A", noteIndex: 5, row: 9, baseMidi: 69 },
-            { name: "Bb", noteIndex: 6, row: 8, baseMidi: 70 },
-            { name: "B", noteIndex: 6, row: 8, baseMidi: 71 }
+            { name: "A", noteIndex: 5, row: 16, baseMidi: 57 }, // A3 grave
+            { name: "Bb", noteIndex: 6, row: 15, baseMidi: 58 }, // Bb3 grave
+            { name: "B", noteIndex: 6, row: 15, baseMidi: 59 }   // B3 grave
         ];
 
         const noteNames = ["Do", "Re", "Mi", "Fa", "Sol", "La", "Si"];
 
-        // Generador Dinámico de los 81 ejercicios
         let retosPentagrama = [];
         rootNotes.forEach(root => {
             baseScales.forEach(scale => {
@@ -471,22 +443,28 @@
                     cell.onclick = () => handleCellClick(c, r);
 
                     if (staffState[c] && staffState[c].row === r) {
-                        // Líneas adicionales dinámicas
-                        if (r === 14) { // C4
-                            const ledger = document.createElement('div');
-                            ledger.className = 'ledger-line';
-                            cell.appendChild(ledger);
+                        // Líneas adicionales inferiores (A3, B3, C4)
+                        if (r === 14) {
+                            const ledger = document.createElement('div'); ledger.className = 'ledger-line'; cell.appendChild(ledger);
                         }
-                        if (r === 2) { // A5
-                            const ledger = document.createElement('div');
-                            ledger.className = 'ledger-line';
-                            cell.appendChild(ledger);
+                        if (r === 15) {
+                            const ledgerC4 = document.createElement('div'); ledgerC4.className = 'ledger-line'; ledgerC4.style.top = '-50%'; cell.appendChild(ledgerC4);
                         }
-                        if (r === 1) { // B5 (la nota está arriba, necesita línea en A5)
-                            const ledger = document.createElement('div');
-                            ledger.className = 'ledger-line';
-                            ledger.style.top = '150%';
-                            cell.appendChild(ledger);
+                        if (r === 16) {
+                            const ledgerA3 = document.createElement('div'); ledgerA3.className = 'ledger-line'; cell.appendChild(ledgerA3);
+                            const ledgerC4 = document.createElement('div'); ledgerC4.className = 'ledger-line'; ledgerC4.style.top = '-150%'; cell.appendChild(ledgerC4);
+                        }
+
+                        // Líneas adicionales superiores (A5, B5, C6)
+                        if (r === 2) {
+                            const ledger = document.createElement('div'); ledger.className = 'ledger-line'; cell.appendChild(ledger);
+                        }
+                        if (r === 1) {
+                            const ledgerA5 = document.createElement('div'); ledgerA5.className = 'ledger-line'; ledgerA5.style.top = '150%'; cell.appendChild(ledgerA5);
+                        }
+                        if (r === 0) {
+                            const ledgerC6 = document.createElement('div'); ledgerC6.className = 'ledger-line'; cell.appendChild(ledgerC6);
+                            const ledgerA5 = document.createElement('div'); ledgerA5.className = 'ledger-line'; ledgerA5.style.top = '250%'; cell.appendChild(ledgerA5);
                         }
 
                         const noteHead = document.createElement('div');
@@ -515,7 +493,6 @@
             if (!currentState || currentState.row !== row) {
                 staffState[col] = { row: row, acc: '' };
             } else {
-                // Ciclo actualizado con dobles alteraciones
                 if (currentState.acc === '') staffState[col].acc = '#';
                 else if (currentState.acc === '#') staffState[col].acc = 'x';
                 else if (currentState.acc === 'x') staffState[col].acc = 'b';
@@ -540,17 +517,15 @@
             hideFeedback('pent-feedback');
             renderStaffGrid();
 
-            // Renderizar la fórmula debajo de las notas
             const formulaContainer = document.getElementById('pent-formula-container');
-            const modeName = retoActual.titulo.substring(retoActual.titulo.indexOf(' ') + 1); // Extrae "Jónico", "Mixolidio b13", etc.
+            const modeName = retoActual.titulo.substring(retoActual.titulo.indexOf(' ') + 1);
             const formula = formulasPorModo[modeName];
             
-            let htmlFormula = '<div></div>'; // Espacio inicial vacío para alinear con la clave de Sol
+            let htmlFormula = '<div></div>'; 
             formula.forEach(grado => {
-                // Darle color según tipo para reforzar el aprendizaje
-                let colorClass = "text-slate-300"; // Notas estructurales del acorde
-                if (grado.startsWith("S")) colorClass = "text-orange-400"; // Notas a evitar
-                else if (grado.startsWith("T")) colorClass = "text-cyan-400"; // Tensiones disponibles
+                let colorClass = "text-slate-300"; 
+                if (grado.startsWith("S")) colorClass = "text-orange-400"; 
+                else if (grado.startsWith("T")) colorClass = "text-cyan-400"; 
 
                 htmlFormula += `<div class="${colorClass} bg-slate-800/80 mx-0.5 md:mx-1 py-1 rounded border border-slate-700 shadow-inner">${grado}</div>`;
             });
@@ -564,18 +539,32 @@
 
             for (let i = 0; i < colsPentagrama; i++) {
                 if (!staffState[i]) {
-                    allCorrect = false;
                     missing = true;
                     break;
                 }
-                // Si el alumno pone un becuadro "explícito", lo tratamos como natural
-                let userAcc = staffState[i].acc === 'nat' ? '' : staffState[i].acc;
-                if (staffState[i].row !== expected[i].r || userAcc !== expected[i].a) {
+            }
+
+            if (!missing) {
+                // INTELIGENCIA DE OCTAVAS: Calculamos la diferencia de altura inicial
+                let rowShift = staffState[0].row - expected[0].r;
+
+                // Verificamos si es un salto exacto de octava (múltiplo de 7 líneas/espacios)
+                if (rowShift % 7 !== 0) {
                     allCorrect = false;
+                } else {
+                    for (let i = 0; i < colsPentagrama; i++) {
+                        let expectedRow = expected[i].r + rowShift;
+                        let userAcc = staffState[i].acc === 'nat' ? '' : staffState[i].acc;
+                        
+                        if (staffState[i].row !== expectedRow || userAcc !== expected[i].a) {
+                            allCorrect = false;
+                            break;
+                        }
+                    }
                 }
             }
 
-            if (allCorrect) {
+            if (allCorrect && !missing) {
                 showFeedback('pent-feedback', '¡Perfecto! Has escrito la escala correctamente.', 'success');
                 pentStats.correct++;
             } else if (missing) {
@@ -610,34 +599,30 @@
         }
 
         // --- AUDIO CONTEXT PARA SÍNTESIS MUSICAL ---
-        // Se actualiza para las 16 filas
         const rowToMidiAudio = {
-            15: 59, 14: 60, 13: 62, 12: 64, 11: 65, 10: 67, 9: 69,
+            16: 57, 15: 59, 14: 60, 13: 62, 12: 64, 11: 65, 10: 67, 9: 69,
             8: 71, 7: 72, 6: 74, 5: 76, 4: 77, 3: 79, 2: 81, 1: 83, 0: 84
         };
 
         let audioCtx = null;
 
         function playNote(midiNote, timeOffset) {
-            // Inicializar el contexto de audio solo tras la interacción del usuario
             if (!audioCtx) {
                 audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             }
             
-            // Fórmula estándar para convertir nota MIDI a Frecuencia en Hz
             const freq = 440 * Math.pow(2, (midiNote - 69) / 12);
             const osc = audioCtx.createOscillator();
             const gainNode = audioCtx.createGain();
 
-            osc.type = 'sine'; // Tono suave tipo teclado electrónico
+            osc.type = 'sine'; 
             osc.frequency.value = freq;
 
             const t = audioCtx.currentTime + timeOffset;
             
-            // Envolvente para darle decaimiento a la nota y evitar ruidos (clics)
             gainNode.gain.setValueAtTime(0, t);
-            gainNode.gain.linearRampToValueAtTime(0.4, t + 0.05); // Ataque rápido
-            gainNode.gain.exponentialRampToValueAtTime(0.001, t + 0.5); // Desvanecimiento gradual
+            gainNode.gain.linearRampToValueAtTime(0.4, t + 0.05); 
+            gainNode.gain.exponentialRampToValueAtTime(0.001, t + 0.5); 
 
             osc.connect(gainNode);
             gainNode.connect(audioCtx.destination);
@@ -654,10 +639,8 @@
             let notasA_Reproducir = [];
 
             if (hasNotes) {
-                // Reproducir exactamente lo que dibujó el alumno
                 notasA_Reproducir = staffState;
             } else {
-                // Si está vacío, reproducir la solución como referencia de oído
                 notasA_Reproducir = retosPentagrama[currentPentIndex].solucion;
             }
 
@@ -673,7 +656,7 @@
                     if (userAcc === 'bb') midi -= 2;
                     if (userAcc === 'x') midi += 2;
                     
-                    playNote(midi, index * 0.4); // Intervalo de 400ms entre cada nota
+                    playNote(midi, index * 0.4);
                 }
             });
         }
