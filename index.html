@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Práctica de Armonía: Relación Escala/Acorde</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
+        
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #f8fafc; }
+        
+        /* Estilos del Pentagrama Interactivo */
+        .staff-container {
+            position: relative;
+            width: 100%;
+            height: 280px; /* Aumentamos la altura para las nuevas líneas adicionales */
+            background-color: #f8fafc;
+            border-radius: 0.5rem;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+            color: #0f172a;
+        }
+
+        .staff-lines {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            padding: 20px 0;
+        }
+
+        .staff-row {
+            flex: 1;
+            position: relative;
+        }
+
+        .staff-line {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: #334155;
+            transform: translateY(-50%);
+            z-index: 1;
+        }
+
+        .ledger-line {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 32px;
+            height: 2px;
+            background-color: #334155;
+            transform: translate(-50%, -50%);
+            z-index: 15;
+        }
+
+        .staff-grid {
+            position: absolute;
+            inset: 0;
+            display: grid;
+            grid-template-columns: 80px repeat(8, 1fr); /* Le dimos más ancho a la primera columna (de 60px a 80px) */
+            padding: 20px 0;
+            z-index: 10;
+        }
+
+        .clef-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 240px; /* Usamos píxeles absolutos enormes para forzar su tamaño en cualquier navegador */
+            line-height: 0; 
+            font-family: 'Times New Roman', serif; 
+            color: #334155;
+            user-select: none;
+            transform: translateY(-15px); /* Ajuste milimétrico hacia arriba para que el centro abrace la línea de Sol */
+            margin-left: 10px; /* Separamos un poquito del borde izquierdo */
+        }
+
+        .note-column {
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .note-cell {
+            flex: 1;
+            cursor: pointer;
+            position: relative;
+            transition: background-color 0.2s;
+        }
+
+        .note-cell:hover {
+            background-color: rgba(56, 189, 248, 0.2);
+        }
+
+        .note-head {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 14px;
+            background-color: #0f172a;
+            border-radius: 50%;
+            transform: translate(-50%, -50%) rotate(-15deg);
+            z-index: 20;
+            box-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .accidental {
+            position: absolute;
+            top: 50%;
+            left: -15px;
+            transform: translateY(-50%);
+            font-family: serif;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #0f172a;
+            z-index: 20;
+        }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #1e293b; }
+        ::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #64748b; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-slate-900 border-b border-slate-800 p-6 shadow-lg">
+        <div class="max-w-4xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            <div>
+                <h1 class="text-2xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">
+                    Armonía III: Relación Escala/acorde Modo Mayor
+                </h1>
+                <p class="text-slate-400 text-sm mt-1">
+                    Nomenclatura y Pentagrama &bull; <span class="text-slate-300 font-medium">Profesor Marcelo Melipil J.</span>
+                </p>
+            </div>
+            <div class="flex bg-slate-800 rounded-lg p-1">
+                <button onclick="switchTab('nom')" id="tab-nom" class="px-4 py-2 rounded-md text-sm font-semibold transition-all bg-blue-600 text-white shadow">Nomenclatura</button>
+                <button onclick="switchTab('pent')" id="tab-pent" class="px-4 py-2 rounded-md text-sm font-semibold text-slate-400 hover:text-white transition-all">Pentagrama</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow max-w-4xl mx-auto w-full p-6">
+        
+        <!-- SECTION 1: NOMENCLATURA -->
+        <section id="sec-nom" class="block">
+            <div class="bg-slate-800 rounded-2xl p-6 md:p-8 shadow-xl border border-slate-700">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-bold text-white">Escribe la relación escala/acorde</h2>
+                    <span class="bg-slate-700 text-cyan-300 text-xs px-3 py-1 rounded-full font-mono" id="nom-counter">0/0 correctas</span>
+                </div>
+                
+                <p class="text-slate-300 mb-6">Selecciona los grados, tensiones (T) y notas a evitar (S) para construir la siguiente escala:</p>
+                
+                <div class="bg-slate-900/50 rounded-xl p-6 border border-slate-700/50 mb-8">
+                    <h3 class="text-3xl font-extrabold text-center text-cyan-400 mb-8" id="nom-scale-name">Escala Jónica</h3>
+                    
+                    <div class="grid grid-cols-4 md:grid-cols-8 gap-3" id="nom-inputs-container">
+                        <!-- Generado por JS -->
+                    </div>
+                </div>
+
+                <div id="nom-feedback" class="hidden mb-6 p-4 rounded-lg text-center font-semibold text-lg"></div>
+
+                <div class="flex justify-between">
+                    <button onclick="checkNomenclatura()" class="bg-emerald-500 hover:bg-emerald-400 text-white px-6 py-3 rounded-lg font-bold transition-colors shadow-lg shadow-emerald-500/20">
+                        Comprobar Respuesta
+                    </button>
+                    <button onclick="nextNomenclatura()" class="bg-slate-700 hover:bg-slate-600 text-white px-6 py-3 rounded-lg font-bold transition-colors">
+                        Siguiente Escala ➔
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: PENTAGRAMA -->
+        <section id="sec-pent" class="hidden">
+            <div class="bg-slate-800 rounded-2xl p-6 md:p-8 shadow-xl border border-slate-700">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-bold text-white">Escritura Musical</h2>
+                    <span class="bg-slate-700 text-blue-300 text-xs px-3 py-1 rounded-full font-mono" id="pent-counter">0/0 correctas</span>
+                </div>
+
+                <p class="text-slate-300 mb-2">Dibuja la escala solicitada en el pentagrama (incluyendo la octava al final).</p>
+                <p class="text-sm text-cyan-400 mb-6 font-semibold">💡 Tip: Haz clic en una celda para poner una nota. Sigue haciendo clic para rotar entre Sostenido (♯), Doble Sostenido (x), Bemol (♭), Doble Bemol (♭♭), Becuadro (♮) y Borrar.</p>
+                
+                <div class="bg-slate-900/50 rounded-xl p-6 border border-slate-700/50 mb-8">
+                    <h3 class="text-2xl font-extrabold text-center text-blue-400 mb-6" id="pent-challenge-name">Escala Dórica en Re (D)</h3>
+                    
+                    <!-- Pentagrama Interactivo -->
+                    <div class="staff-container" id="staff-container">
+                        <div class="staff-lines">
+                            <div class="staff-row"></div> <!-- C6 -->
+                            <div class="staff-row"></div> <!-- B5 -->
+                            <div class="staff-row"></div> <!-- A5 -->
+                            <div class="staff-row"></div> <!-- G5 -->
+                            <div class="staff-row"><div class="staff-line"></div></div> <!-- F5 -->
+                            <div class="staff-row"></div> <!-- E5 -->
+                            <div class="staff-row"><div class="staff-line"></div></div> <!-- D5 -->
+                            <div class="staff-row"></div> <!-- C5 -->
+                            <div class="staff-row"><div class="staff-line"></div></div> <!-- B4 -->
+                            <div class="staff-row"></div> <!-- A4 -->
+                            <div class="staff-row"><div class="staff-line"></div></div> <!-- G4 -->
+                            <div class="staff-row"></div> <!-- F4 -->
+                            <div class="staff-row"><div class="staff-line"></div></div> <!-- E4 -->
+                            <div class="staff-row"></div> <!-- D4 -->
+                            <div class="staff-row"></div> <!-- C4 -->
+                            <div class="staff-row"></div> <!-- B3 -->
+                        </div>
+                        
+                        <div class="staff-grid" id="staff-grid">
+                            <div class="clef-container">𝄞</div>
+                        </div>
+                    </div>
+
+                    <!-- NUEVA SECCIÓN: Fórmula bajo el pentagrama -->
+                    <div id="pent-formula-container" style="display: grid; grid-template-columns: 80px repeat(8, 1fr);" class="mt-4 text-center font-mono text-[10px] md:text-sm font-bold">
+                        <!-- Generado por JS -->
+                    </div>
+                    
+                </div>
+
+                <div id="pent-feedback" class="hidden mb-6 p-4 rounded-lg text-center font-semibold text-lg"></div>
+
+                <div class="flex justify-between gap-4 flex-wrap">
+                    <div class="flex gap-2">
+                        <button onclick="checkPentagrama()" class="bg-emerald-500 hover:bg-emerald-400 text-white px-6 py-3 rounded-lg font-bold transition-colors shadow-lg shadow-emerald-500/20">
+                            Comprobar Notas
+                        </button>
+                        <button onclick="playScaleSequence()" class="bg-blue-500 hover:bg-blue-400 text-white px-4 py-3 rounded-lg font-bold transition-colors shadow-lg shadow-blue-500/20 flex items-center justify-center" title="Reproducir las notas">
+                            🔊 Reproducir
+                        </button>
+                    </div>
+                    <button onclick="nextPentagrama()" class="bg-slate-700 hover:bg-slate-600 text-white px-6 py-3 rounded-lg font-bold transition-colors">
+                        Siguiente Ejercicio ➔
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Pie de página (Footer) -->
+    <footer class="py-8 text-center text-slate-500 text-sm border-t border-slate-800 mt-auto bg-slate-900/50">
+        <p>Desarrollado para la clase de Armonía &bull; <strong class="text-slate-400">Profesor Marcelo Melipil J.</strong></p>
+    </footer>
+
+    <script>
+        // Lógica de navegación
+        function switchTab(tab) {
+            const secNom = document.getElementById('sec-nom');
+            const secPent = document.getElementById('sec-pent');
+            const btnNom = document.getElementById('tab-nom');
+            const btnPent = document.getElementById('tab-pent');
+
+            if (tab === 'nom') {
+                secNom.classList.remove('hidden');
+                secPent.classList.add('hidden');
+                btnNom.classList.replace('text-slate-400', 'text-white');
+                btnNom.classList.replace('bg-transparent', 'bg-blue-600');
+                btnPent.classList.replace('bg-blue-600', 'bg-transparent');
+                btnPent.classList.replace('text-white', 'text-slate-400');
+            } else {
+                secPent.classList.remove('hidden');
+                secNom.classList.add('hidden');
+                btnPent.classList.replace('text-slate-400', 'text-white');
+                btnPent.classList.replace('bg-transparent', 'bg-blue-600');
+                btnNom.classList.replace('bg-blue-600', 'bg-transparent');
+                btnNom.classList.replace('text-white', 'text-slate-400');
+                renderStaffGrid();
+            }
+        }
+
+        // --- MODO NOMENCLATURA ---
+        const nomenclaturas = [
+            { nombre: "Jónica (I)", grados: ["1", "T9", "3", "S4", "5", "T13", "7", "1"] },
+            { nombre: "Dórica (IIm)", grados: ["1", "T9", "b3", "T11", "5", "S6", "b7", "1"] },
+            { nombre: "Frigia (IIIm)", grados: ["1", "Sb2", "b3", "T11", "5", "Sb6", "b7", "1"] },
+            { nombre: "Lidia (IV)", grados: ["1", "T9", "3", "T#11", "5", "T13", "7", "1"] },
+            { nombre: "Mixolidia (V7)", grados: ["1", "T9", "3", "S4", "5", "T13", "b7", "1"] },
+            { nombre: "Eólica (VIm)", grados: ["1", "T9", "b3", "T11", "5", "Sb6", "b7", "1"] },
+            { nombre: "Locria (VIIm7b5)", grados: ["1", "Sb2", "b3", "T11", "b5", "Sb6", "b7", "1"] },
+            { nombre: "Mixolidia b13 (V7/II)", grados: ["1", "T9", "3", "S4", "5", "Tb13", "b7", "1"] },
+            { nombre: "Mixolidia b9 b13", grados: ["1", "Tb9", "3", "S4", "5", "Tb13", "b7", "1"] }
+        ];
+
+        const opcionesDropdown = [
+            "-", "1", "Sb2", "T9", "Tb9", "T#9", "b3", "3", "S4", "T11", "T#11", 
+            "b5", "5", "T#5", "Sb6", "S6", "Tb13", "T13", "b7", "7"
+        ];
+
+        let currentNomIndex = -1;
+        let nomStats = { correct: 0, total: 0 };
+
+        function initNomenclatura() {
+            const container = document.getElementById('nom-inputs-container');
+            container.innerHTML = '';
+            
+            for (let i = 0; i < 8; i++) {
+                const select = document.createElement('select');
+                select.id = `nom-sel-${i}`;
+                select.className = "w-full bg-slate-800 text-white font-mono text-center border-2 border-slate-600 rounded-lg p-3 appearance-none focus:outline-none focus:border-cyan-400 cursor-pointer shadow-inner";
+                
+                opcionesDropdown.forEach(op => {
+                    const option = document.createElement('option');
+                    option.value = op;
+                    option.innerText = op;
+                    select.appendChild(option);
+                });
+                
+                if (i === 0) select.value = "1";
+                container.appendChild(select);
+            }
+            nextNomenclatura();
+        }
+
+        function nextNomenclatura() {
+            currentNomIndex = Math.floor(Math.random() * nomenclaturas.length);
+            document.getElementById('nom-scale-name').innerText = nomenclaturas[currentNomIndex].nombre;
+            
+            for (let i = 0; i < 8; i++) {
+                const sel = document.getElementById(`nom-sel-${i}`);
+                sel.value = i === 0 ? "1" : "-";
+                sel.classList.remove('border-red-500', 'border-emerald-500', 'bg-red-900/30', 'bg-emerald-900/30');
+                sel.classList.add('border-slate-600', 'bg-slate-800');
+            }
+            hideFeedback('nom-feedback');
+        }
+
+        function checkNomenclatura() {
+            const expected = nomenclaturas[currentNomIndex].grados;
+            let allCorrect = true;
+
+            for (let i = 0; i < 8; i++) {
+                const sel = document.getElementById(`nom-sel-${i}`);
+                const val = sel.value;
+                const exp = expected[i] || "-";
+
+                sel.classList.remove('border-slate-600', 'border-red-500', 'border-emerald-500', 'bg-red-900/30', 'bg-emerald-900/30');
+
+                if (val === exp) {
+                    sel.classList.add('border-emerald-500', 'bg-emerald-900/30');
+                } else {
+                    sel.classList.add('border-red-500', 'bg-red-900/30');
+                    allCorrect = false;
+                }
+            }
+
+            if (allCorrect) {
+                showFeedback('nom-feedback', '¡Excelente! Respuesta perfecta.', 'success');
+                nomStats.correct++;
+            } else {
+                const formulaStr = expected.filter(e => e !== '-').join(' - ');
+                showFeedback('nom-feedback', `Hay errores. La fórmula correcta es: ${formulaStr}`, 'error');
+            }
+            nomStats.total++;
+            updateStats('nom-counter', nomStats);
+        }
+
+        // --- MODO PENTAGRAMA ---
+        const filasPentagrama = 16; 
+        const colsPentagrama = 8;
+        
+        let staffState = Array(colsPentagrama).fill(null);
+
+        // Diccionario para vincular el nombre de la escala con su fórmula
+        const formulasPorModo = {
+            "Jónico": ["1", "T9", "3", "S4", "5", "T13", "7", "1"],
+            "Dórico": ["1", "T9", "b3", "T11", "5", "S6", "b7", "1"],
+            "Frigio": ["1", "Sb2", "b3", "T11", "5", "Sb6", "b7", "1"],
+            "Lidio": ["1", "T9", "3", "T#11", "5", "T13", "7", "1"],
+            "Mixolidio": ["1", "T9", "3", "S4", "5", "T13", "b7", "1"],
+            "Eólico": ["1", "T9", "b3", "T11", "5", "Sb6", "b7", "1"],
+            "Locrio": ["1", "Sb2", "b3", "T11", "b5", "Sb6", "b7", "1"],
+            "Mixolidio b13": ["1", "T9", "3", "S4", "5", "Tb13", "b7", "1"],
+            "Mixolidio b9 b13": ["1", "Tb9", "3", "S4", "5", "Tb13", "b7", "1"]
+        };
+
+        // Valores MIDI y visuales para el generador
+        const rowToMidi = {
+            15: 59, 14: 60, 13: 62, 12: 64, 11: 65, 10: 67, 9: 69,
+            8: 71, 7: 72, 6: 74, 5: 76, 4: 77, 3: 79, 2: 81, 1: 83, 0: 84
+        };
+
+        const baseScales = [
+            { name: "Jónico", intervals: [0, 2, 4, 5, 7, 9, 11, 12] },
+            { name: "Dórico", intervals: [0, 2, 3, 5, 7, 9, 10, 12] },
+            { name: "Frigio", intervals: [0, 1, 3, 5, 7, 8, 10, 12] },
+            { name: "Lidio", intervals: [0, 2, 4, 6, 7, 9, 11, 12] },
+            { name: "Mixolidio", intervals: [0, 2, 4, 5, 7, 9, 10, 12] },
+            { name: "Eólico", intervals: [0, 2, 3, 5, 7, 8, 10, 12] },
+            { name: "Locrio", intervals: [0, 1, 3, 5, 6, 8, 10, 12] },
+            { name: "Mixolidio b13", intervals: [0, 2, 4, 5, 7, 8, 10, 12] },
+            { name: "Mixolidio b9 b13", intervals: [0, 1, 4, 5, 7, 8, 10, 12] }
+        ];
+
+        const rootNotes = [
+            { name: "C", noteIndex: 0, row: 14, baseMidi: 60 },
+            { name: "D", noteIndex: 1, row: 13, baseMidi: 62 },
+            { name: "Eb", noteIndex: 2, row: 12, baseMidi: 63 },
+            { name: "E", noteIndex: 2, row: 12, baseMidi: 64 },
+            { name: "F", noteIndex: 3, row: 11, baseMidi: 65 },
+            { name: "G", noteIndex: 4, row: 10, baseMidi: 67 },
+            { name: "A", noteIndex: 5, row: 9, baseMidi: 69 },
+            { name: "Bb", noteIndex: 6, row: 8, baseMidi: 70 },
+            { name: "B", noteIndex: 6, row: 8, baseMidi: 71 }
+        ];
+
+        const noteNames = ["Do", "Re", "Mi", "Fa", "Sol", "La", "Si"];
+
+        // Generador Dinámico de los 81 ejercicios
+        let retosPentagrama = [];
+        rootNotes.forEach(root => {
+            baseScales.forEach(scale => {
+                let solucion = [];
+                let notasTextArr = [];
+
+                for (let i = 0; i < 8; i++) {
+                    let currentNoteIndex = (root.noteIndex + i) % 7;
+                    let currentRow = root.row - i;
+                    let targetMidi = root.baseMidi + scale.intervals[i];
+                    let naturalMidi = rowToMidi[currentRow];
+
+                    let diff = targetMidi - naturalMidi;
+                    let acc = '';
+                    let accText = '';
+
+                    if (diff === 1) { acc = '#'; accText = '♯'; }
+                    else if (diff === -1) { acc = 'b'; accText = '♭'; }
+                    else if (diff === 2) { acc = 'x'; accText = 'x'; }
+                    else if (diff === -2) { acc = 'bb'; accText = '♭♭'; }
+
+                    solucion.push({ r: currentRow, a: acc });
+                    notasTextArr.push(noteNames[currentNoteIndex] + accText);
+                }
+
+                retosPentagrama.push({
+                    titulo: `${root.name} ${scale.name}`,
+                    notasText: notasTextArr.join(" - "),
+                    solucion: solucion
+                });
+            });
+        });
+
+        let currentPentIndex = -1;
+        let pentStats = { correct: 0, total: 0 };
+
+        function initPentagrama() {
+            nextPentagrama();
+        }
+
+        function renderStaffGrid() {
+            const grid = document.getElementById('staff-grid');
+            grid.innerHTML = '<div class="clef-container">𝄞</div>';
+
+            for (let c = 0; c < colsPentagrama; c++) {
+                const colDiv = document.createElement('div');
+                colDiv.className = 'note-column';
+                
+                for (let r = 0; r < filasPentagrama; r++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'note-cell';
+                    cell.onclick = () => handleCellClick(c, r);
+
+                    if (staffState[c] && staffState[c].row === r) {
+                        // Líneas adicionales dinámicas
+                        if (r === 14) { // C4
+                            const ledger = document.createElement('div');
+                            ledger.className = 'ledger-line';
+                            cell.appendChild(ledger);
+                        }
+                        if (r === 2) { // A5
+                            const ledger = document.createElement('div');
+                            ledger.className = 'ledger-line';
+                            cell.appendChild(ledger);
+                        }
+                        if (r === 1) { // B5 (la nota está arriba, necesita línea en A5)
+                            const ledger = document.createElement('div');
+                            ledger.className = 'ledger-line';
+                            ledger.style.top = '150%';
+                            cell.appendChild(ledger);
+                        }
+
+                        const noteHead = document.createElement('div');
+                        noteHead.className = 'note-head';
+                        cell.appendChild(noteHead);
+
+                        if (staffState[c].acc) {
+                            const accDiv = document.createElement('div');
+                            accDiv.className = 'accidental';
+                            if (staffState[c].acc === '#') accDiv.innerText = '♯';
+                            if (staffState[c].acc === 'b') accDiv.innerText = '♭';
+                            if (staffState[c].acc === 'nat') accDiv.innerText = '♮';
+                            if (staffState[c].acc === 'bb') { accDiv.innerText = '♭♭'; accDiv.style.left = '-24px'; }
+                            if (staffState[c].acc === 'x') accDiv.innerText = 'x';
+                            cell.appendChild(accDiv);
+                        }
+                    }
+                    colDiv.appendChild(cell);
+                }
+                grid.appendChild(colDiv);
+            }
+        }
+
+        function handleCellClick(col, row) {
+            const currentState = staffState[col];
+            if (!currentState || currentState.row !== row) {
+                staffState[col] = { row: row, acc: '' };
+            } else {
+                // Ciclo actualizado con dobles alteraciones
+                if (currentState.acc === '') staffState[col].acc = '#';
+                else if (currentState.acc === '#') staffState[col].acc = 'x';
+                else if (currentState.acc === 'x') staffState[col].acc = 'b';
+                else if (currentState.acc === 'b') staffState[col].acc = 'bb';
+                else if (currentState.acc === 'bb') staffState[col].acc = 'nat';
+                else staffState[col] = null; 
+            }
+            renderStaffGrid();
+        }
+
+        function nextPentagrama() {
+            let prev = currentPentIndex;
+            const validRetos = retosPentagrama;
+            
+            do {
+                currentPentIndex = Math.floor(Math.random() * validRetos.length);
+            } while(currentPentIndex === prev && validRetos.length > 1);
+            
+            const retoActual = validRetos[currentPentIndex];
+            document.getElementById('pent-challenge-name').innerText = retoActual.titulo;
+            staffState = Array(colsPentagrama).fill(null);
+            hideFeedback('pent-feedback');
+            renderStaffGrid();
+
+            // Renderizar la fórmula debajo de las notas
+            const formulaContainer = document.getElementById('pent-formula-container');
+            const modeName = retoActual.titulo.substring(retoActual.titulo.indexOf(' ') + 1); // Extrae "Jónico", "Mixolidio b13", etc.
+            const formula = formulasPorModo[modeName];
+            
+            let htmlFormula = '<div></div>'; // Espacio inicial vacío para alinear con la clave de Sol
+            formula.forEach(grado => {
+                // Darle color según tipo para reforzar el aprendizaje
+                let colorClass = "text-slate-300"; // Notas estructurales del acorde
+                if (grado.startsWith("S")) colorClass = "text-orange-400"; // Notas a evitar
+                else if (grado.startsWith("T")) colorClass = "text-cyan-400"; // Tensiones disponibles
+
+                htmlFormula += `<div class="${colorClass} bg-slate-800/80 mx-0.5 md:mx-1 py-1 rounded border border-slate-700 shadow-inner">${grado}</div>`;
+            });
+            formulaContainer.innerHTML = htmlFormula;
+        }
+
+        function checkPentagrama() {
+            const expected = retosPentagrama[currentPentIndex].solucion;
+            let allCorrect = true;
+            let missing = false;
+
+            for (let i = 0; i < colsPentagrama; i++) {
+                if (!staffState[i]) {
+                    allCorrect = false;
+                    missing = true;
+                    break;
+                }
+                // Si el alumno pone un becuadro "explícito", lo tratamos como natural
+                let userAcc = staffState[i].acc === 'nat' ? '' : staffState[i].acc;
+                if (staffState[i].row !== expected[i].r || userAcc !== expected[i].a) {
+                    allCorrect = false;
+                }
+            }
+
+            if (allCorrect) {
+                showFeedback('pent-feedback', '¡Perfecto! Has escrito la escala correctamente.', 'success');
+                pentStats.correct++;
+            } else if (missing) {
+                showFeedback('pent-feedback', 'Faltan notas. Debes colocar 8 notas en total.', 'warning');
+            } else {
+                const notasCorrectas = retosPentagrama[currentPentIndex].notasText;
+                showFeedback('pent-feedback', `Hay errores. Las notas correctas son: ${notasCorrectas}`, 'error');
+            }
+            
+            if(!missing){
+                pentStats.total++;
+                updateStats('pent-counter', pentStats);
+            }
+        }
+
+        function showFeedback(id, message, type) {
+            const el = document.getElementById(id);
+            el.innerText = message;
+            el.className = 'mb-6 p-4 rounded-lg text-center font-semibold text-lg border-2 ' + 
+                (type === 'success' ? 'bg-emerald-900/50 border-emerald-500 text-emerald-200' : 
+                 type === 'warning' ? 'bg-orange-900/50 border-orange-500 text-orange-200' :
+                 'bg-red-900/50 border-red-500 text-red-200');
+            el.classList.remove('hidden');
+        }
+
+        function hideFeedback(id) {
+            document.getElementById(id).classList.add('hidden');
+        }
+
+        function updateStats(id, stats) {
+            document.getElementById(id).innerText = `${stats.correct}/${stats.total} correctas`;
+        }
+
+        // --- AUDIO CONTEXT PARA SÍNTESIS MUSICAL ---
+        // Se actualiza para las 16 filas
+        const rowToMidiAudio = {
+            15: 59, 14: 60, 13: 62, 12: 64, 11: 65, 10: 67, 9: 69,
+            8: 71, 7: 72, 6: 74, 5: 76, 4: 77, 3: 79, 2: 81, 1: 83, 0: 84
+        };
+
+        let audioCtx = null;
+
+        function playNote(midiNote, timeOffset) {
+            // Inicializar el contexto de audio solo tras la interacción del usuario
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            
+            // Fórmula estándar para convertir nota MIDI a Frecuencia en Hz
+            const freq = 440 * Math.pow(2, (midiNote - 69) / 12);
+            const osc = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+
+            osc.type = 'sine'; // Tono suave tipo teclado electrónico
+            osc.frequency.value = freq;
+
+            const t = audioCtx.currentTime + timeOffset;
+            
+            // Envolvente para darle decaimiento a la nota y evitar ruidos (clics)
+            gainNode.gain.setValueAtTime(0, t);
+            gainNode.gain.linearRampToValueAtTime(0.4, t + 0.05); // Ataque rápido
+            gainNode.gain.exponentialRampToValueAtTime(0.001, t + 0.5); // Desvanecimiento gradual
+
+            osc.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+
+            osc.start(t);
+            osc.stop(t + 0.5);
+        }
+
+        function playScaleSequence() {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+
+            let hasNotes = staffState.some(n => n !== null);
+            let notasA_Reproducir = [];
+
+            if (hasNotes) {
+                // Reproducir exactamente lo que dibujó el alumno
+                notasA_Reproducir = staffState;
+            } else {
+                // Si está vacío, reproducir la solución como referencia de oído
+                notasA_Reproducir = retosPentagrama[currentPentIndex].solucion;
+            }
+
+            notasA_Reproducir.forEach((note, index) => {
+                if (note) {
+                    let r = note.row !== undefined ? note.row : note.r;
+                    let acc = note.acc !== undefined ? note.acc : note.a;
+                    let userAcc = acc === 'nat' ? '' : acc;
+                    
+                    let midi = rowToMidiAudio[r];
+                    if (userAcc === '#') midi += 1;
+                    if (userAcc === 'b') midi -= 1;
+                    if (userAcc === 'bb') midi -= 2;
+                    if (userAcc === 'x') midi += 2;
+                    
+                    playNote(midi, index * 0.4); // Intervalo de 400ms entre cada nota
+                }
+            });
+        }
+
+        window.onload = () => {
+            initNomenclatura();
+            initPentagrama();
+        };
+    </script>
+</body>
+</html>
