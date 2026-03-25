@@ -185,7 +185,7 @@
                 </div>
 
                 <p class="text-slate-300 mb-2">Dibuja la escala solicitada en el pentagrama (incluyendo la octava al final).</p>
-                <p class="text-sm text-cyan-400 mb-6 font-semibold">💡 Tip: Haz clic en una celda para poner una nota. Sigue haciendo clic para rotar entre Sostenido (♯), Doble Sostenido (x), Bemol (♭), Doble Bemol (♭♭), Becuadro (♮) y Borrar.</p>
+                <p class="text-sm text-cyan-400 mb-6 font-semibold">💡 Tip: Haz clic en una celda para poner una nota. Sigue haciendo clic para rotar entre Sostenido (♯), Bemol (♭), Doble Sostenido (x), Doble Bemol (♭♭) y Borrar.</p>
                 
                 <div class="bg-slate-900/50 rounded-xl p-6 border border-slate-700/50 mb-8">
                     <h3 class="text-2xl font-extrabold text-center text-blue-400 mb-6" id="pent-challenge-name">Escala Dórica en Re (D)</h3>
@@ -209,7 +209,7 @@
                 <div class="flex justify-between gap-4 flex-wrap">
                     <div class="flex gap-2">
                         <button onclick="checkPentagrama()" class="bg-emerald-500 hover:bg-emerald-400 text-white px-6 py-3 rounded-lg font-bold transition-colors shadow-lg shadow-emerald-500/20">
-                            Comprobar Notas
+                            Comprobar Respuesta
                         </button>
                         <button onclick="playScaleSequence()" class="bg-blue-500 hover:bg-blue-400 text-white px-4 py-3 rounded-lg font-bold transition-colors shadow-lg shadow-blue-500/20 flex items-center justify-center" title="Reproducir las notas">
                             🔊 Reproducir
@@ -260,16 +260,24 @@
             { nombre: "Dórica (IIm)", grados: ["1", "T9", "b3", "T11", "5", "S6", "b7", "1"] },
             { nombre: "Frigia (IIIm)", grados: ["1", "Sb2", "b3", "T11", "5", "Sb6", "b7", "1"] },
             { nombre: "Lidia (IV)", grados: ["1", "T9", "3", "T#11", "5", "T13", "7", "1"] },
-            { nombre: "Mixolidia (V7)", grados: ["1", "T9", "3", "S4", "5", "T13", "b7", "1"] },
+            { nombre: "Mixolidia (V7) (V7/IV) (V7/V)", grados: ["1", "T9", "3", "S4", "5", "T13", "b7", "1"] },
+            { nombre: "Mixolidio (V7sus4)", grados: ["1", "T9", "S3", "4", "5", "T13", "b7", "1"] },
             { nombre: "Eólica (VIm)", grados: ["1", "T9", "b3", "T11", "5", "Sb6", "b7", "1"] },
             { nombre: "Locria (VIIm7b5)", grados: ["1", "Sb2", "b3", "T11", "b5", "Sb6", "b7", "1"] },
             { nombre: "Mixolidia b13 (V7/II)", grados: ["1", "T9", "3", "S4", "5", "Tb13", "b7", "1"] },
-            { nombre: "Mixolidia b9 b13", grados: ["1", "Tb9", "3", "S4", "5", "Tb13", "b7", "1"] }
+            { nombre: "Mixolidia b9 b13 (V7/III) (V7/VI)", grados: ["1", "Tb9", "3", "S4", "5", "Tb13", "b7", "1"] }
         ];
 
-        const opcionesDropdown = [
-            "-", "1", "Sb2", "T9", "Tb9", "T#9", "b3", "3", "S4", "T11", "T#11", 
-            "b5", "5", "T#5", "Sb6", "S6", "Tb13", "T13", "b7", "7"
+        // Opciones específicas para cada grado (casilla)
+        const opcionesPorCasilla = [
+            ["1"],                                     // Casilla 0 (Tónica)
+            ["-", "Sb2", "T9", "Tb9", "T#9"],          // Casilla 1 (Segundas/Novenas)
+            ["-", "b3", "3", "S3"],                    // Casilla 2 (Terceras)
+            ["-", "4", "S4", "T11", "T#11"],           // Casilla 3 (Cuartas/Oncenas)
+            ["-", "b5", "5", "#5"],                    // Casilla 4 (Quintas)
+            ["-", "Sb6", "S6", "Tb13", "T13"],         // Casilla 5 (Sextas/Trecenas)
+            ["-", "b7", "7"],                          // Casilla 6 (Séptimas)
+            ["1"]                                      // Casilla 7 (Octava)
         ];
 
         let currentNomIndex = -1;
@@ -282,16 +290,24 @@
             for (let i = 0; i < 8; i++) {
                 const select = document.createElement('select');
                 select.id = `nom-sel-${i}`;
-                select.className = "w-full bg-slate-800 text-white font-mono text-center border-2 border-slate-600 rounded-lg p-3 appearance-none focus:outline-none focus:border-cyan-400 cursor-pointer shadow-inner";
                 
-                opcionesDropdown.forEach(op => {
+                // Si es la primera o la última, la bloqueamos visual y funcionalmente
+                if (i === 0 || i === 7) {
+                    select.className = "w-full bg-slate-700/50 text-slate-400 font-mono text-center border-2 border-slate-600/50 rounded-lg p-3 appearance-none cursor-not-allowed";
+                    select.disabled = true;
+                } else {
+                    select.className = "w-full bg-slate-800 text-white font-mono text-center border-2 border-slate-600 rounded-lg p-3 appearance-none focus:outline-none focus:border-cyan-400 cursor-pointer shadow-inner";
+                }
+                
+                // Agregamos solo las opciones que corresponden a esa casilla
+                opcionesPorCasilla[i].forEach(op => {
                     const option = document.createElement('option');
                     option.value = op;
                     option.innerText = op;
                     select.appendChild(option);
                 });
                 
-                if (i === 0) select.value = "1";
+                if (i === 0 || i === 7) select.value = "1";
                 container.appendChild(select);
             }
             nextNomenclatura();
@@ -303,9 +319,16 @@
             
             for (let i = 0; i < 8; i++) {
                 const sel = document.getElementById(`nom-sel-${i}`);
-                sel.value = i === 0 ? "1" : "-";
+                if (i === 0 || i === 7) {
+                    sel.value = "1";
+                } else {
+                    sel.value = "-";
+                }
                 sel.classList.remove('border-red-500', 'border-emerald-500', 'bg-red-900/30', 'bg-emerald-900/30');
-                sel.classList.add('border-slate-600', 'bg-slate-800');
+                
+                if (i !== 0 && i !== 7) {
+                    sel.classList.add('border-slate-600', 'bg-slate-800');
+                }
             }
             hideFeedback('nom-feedback');
         }
@@ -334,7 +357,7 @@
                 nomStats.correct++;
             } else {
                 const formulaStr = expected.filter(e => e !== '-').join(' - ');
-                showFeedback('nom-feedback', `Hay errores. La fórmula correcta es: ${formulaStr}`, 'error');
+                showFeedback('nom-feedback', `Hay errores. La respuesta correcta es: ${formulaStr}`, 'error');
             }
             nomStats.total++;
             updateStats('nom-counter', nomStats);
@@ -476,7 +499,6 @@
                             accDiv.className = 'accidental';
                             if (staffState[c].acc === '#') accDiv.innerText = '♯';
                             if (staffState[c].acc === 'b') accDiv.innerText = '♭';
-                            if (staffState[c].acc === 'nat') accDiv.innerText = '♮';
                             if (staffState[c].acc === 'bb') { accDiv.innerText = '♭♭'; accDiv.style.left = '-24px'; }
                             if (staffState[c].acc === 'x') accDiv.innerText = 'x';
                             cell.appendChild(accDiv);
@@ -494,11 +516,10 @@
                 staffState[col] = { row: row, acc: '' };
             } else {
                 if (currentState.acc === '') staffState[col].acc = '#';
-                else if (currentState.acc === '#') staffState[col].acc = 'x';
-                else if (currentState.acc === 'x') staffState[col].acc = 'b';
-                else if (currentState.acc === 'b') staffState[col].acc = 'bb';
-                else if (currentState.acc === 'bb') staffState[col].acc = 'nat';
-                else staffState[col] = null; 
+                else if (currentState.acc === '#') staffState[col].acc = 'b';
+                else if (currentState.acc === 'b') staffState[col].acc = 'x';
+                else if (currentState.acc === 'x') staffState[col].acc = 'bb';
+                else if (currentState.acc === 'bb') staffState[col] = null; 
             }
             renderStaffGrid();
         }
@@ -554,7 +575,7 @@
                 } else {
                     for (let i = 0; i < colsPentagrama; i++) {
                         let expectedRow = expected[i].r + rowShift;
-                        let userAcc = staffState[i].acc === 'nat' ? '' : staffState[i].acc;
+                        let userAcc = staffState[i].acc;
                         
                         if (staffState[i].row !== expectedRow || userAcc !== expected[i].a) {
                             allCorrect = false;
@@ -648,7 +669,7 @@
                 if (note) {
                     let r = note.row !== undefined ? note.row : note.r;
                     let acc = note.acc !== undefined ? note.acc : note.a;
-                    let userAcc = acc === 'nat' ? '' : acc;
+                    let userAcc = acc;
                     
                     let midi = rowToMidiAudio[r];
                     if (userAcc === '#') midi += 1;
