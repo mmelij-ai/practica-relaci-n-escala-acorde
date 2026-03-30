@@ -5,14 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Armonía III: Suite Projazz</title>
   
-  <!-- Cargamos Tailwind CSS -->
+  <!-- Cargamos Tailwind CSS para los estilos -->
   <script src="https://cdn.tailwindcss.com"></script>
   
   <!-- Cargamos React y ReactDOM -->
   <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
   
-  <!-- Cargamos Babel para que el navegador entienda el código JSX -->
+  <!-- Cargamos Babel para que el navegador entienda el código de React (JSX) -->
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
   <style>
@@ -148,9 +148,10 @@
   <div id="root"></div>
 
   <script type="text/babel">
+    // Extraemos las funciones que necesitamos de React global
     const { useState, useMemo, useEffect } = React;
 
-    // --- ÍCONOS SVG INTEGADOS PARA QUE FUNCIONE SIN DEPENDENCIAS EXTRA ---
+    // --- ÍCONOS SVG INTEGADOS ---
     const ArrowLeft = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>;
     const Play = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>;
     const Music = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>;
@@ -1409,17 +1410,20 @@
     }
 
     function App() {
-      const [currentView, setCurrentView] = useState('home'); // 'home', 'generator', 'practice'
+      const [currentView, setCurrentView] = useState('home'); 
 
       if (currentView === 'generator') {
-        return <ScaleGenerator onBack={() => setCurrentView('home')} />;
+        return (
+          <ScaleGenerator onBack={() => setCurrentView('home')} />
+        );
       }
 
       if (currentView === 'practice') {
-        return <HarmonyPractice onBack={() => setCurrentView('home')} />;
+        return (
+          <HarmonyPractice onBack={() => setCurrentView('home')} />
+        );
       }
 
-      // VISTA INICIAL (HOME)
       return (
           <div className="min-h-screen bg-slate-900 text-slate-50 flex flex-col items-center justify-center p-4 animate-in fade-in duration-500">
             <div className="text-center mb-12">
@@ -1435,7 +1439,6 @@
             </div>
 
             <div className="grid md:grid-cols-2 gap-6 w-full max-w-4xl">
-              {/* BOTÓN PRÁCTICA */}
               <button 
                 onClick={() => setCurrentView('practice')}
                 className="group text-left bg-slate-800 p-8 rounded-3xl shadow-xl hover:shadow-2xl border border-slate-700 hover:border-emerald-500 transition-all duration-300 transform hover:-translate-y-1 relative overflow-hidden"
@@ -1455,7 +1458,6 @@
                 </div>
               </button>
 
-              {/* BOTÓN GENERADOR */}
               <button 
                 onClick={() => setCurrentView('generator')}
                 className="group text-left bg-slate-800 p-8 rounded-3xl shadow-xl hover:shadow-2xl border border-slate-700 hover:border-cyan-500 transition-all duration-300 transform hover:-translate-y-1 relative overflow-hidden"
