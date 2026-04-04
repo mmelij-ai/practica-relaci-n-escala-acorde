@@ -124,8 +124,8 @@
     .practice-accidental {
         position: absolute;
         top: 50%;
-        left: -18px; 
-        transform: translateY(-50%);
+        left: calc(50% - 12px); 
+        transform: translate(-100%, -50%); 
         font-family: serif;
         font-size: 1rem;
         font-weight: bold;
@@ -133,10 +133,8 @@
         z-index: 20;
     }
     @media (min-width: 768px) {
-        .practice-accidental { left: -22px; font-size: 1.2rem; } 
+        .practice-accidental { left: calc(50% - 14px); font-size: 1.2rem; } 
     }
-    .practice-double-flat { left: -24px !important; }
-    @media (min-width: 768px) { .practice-double-flat { left: -32px !important; } }
 
     ::-webkit-scrollbar { width: 8px; height: 8px; }
     ::-webkit-scrollbar-track { background: #1e293b; border-radius: 4px; }
@@ -377,7 +375,7 @@
           { name: "Mixolidia (b9, #9, b13)", rootInterval: '5', chordQuality: '7(b9,#9,b13)', formula: ["1", "Tb9", "T#9", "3", "S4", "5", "Tb13", "b7"], details: "Opción con más tensión. Usa enarmónicos de Jazz (#9 y 3)." },
           { name: "Escala Alterada (Super Locria)", rootInterval: '5', chordQuality: '7alt', formula: ["1", "Tb9", "T#9", "3", "b5", "Tb13", "b7"], details: "Contiene b9, #9, b5 (#11) y b13. Sin notas a evitar." },
           { name: "Escala Hexáfona (Tonos Enteros)", rootInterval: '5', chordQuality: '+7', formula: ["1", "T9", "3", "T#11", "T#5", "b7"], details: "Para acordes aumentados. Simétrica, sin notas a evitar." },
-          { name: "Dominante Simétrica (Disminuida)", rootInterval: '5', chordQuality: '7(dim)', formula: ["1", "Tb9", "T#9", "3", "T#11", "5", "T13", "b7"], details: "Secuencia semitono-tono. Mezcla tensiones naturales y alteradas." }
+          { name: "Dominante de 8 Notas", rootInterval: '5', chordQuality: '7(dim)', formula: ["1", "Tb9", "T#9", "3", "T#11", "5", "T13", "b7"], details: "Secuencia semitono-tono. Mezcla tensiones naturales y alteradas." }
         ]
       }
     };
@@ -408,6 +406,31 @@
           { name: "V7/V (Mixo b9 b13)", rootInterval: 'T9', chordQuality: '7', formula: ["1", "Tb9", "3", "S4", "5", "Tb13", "b7"], details: "Dominante del V grado." },
           { name: "V7/VI (Mixolidia)", rootInterval: 'b3', chordQuality: '7', formula: ["1", "T9", "3", "S4", "5", "T13", "b7"], details: "Dominante del bVI grado." },
           { name: "V7/VII (Mixolidia)", rootInterval: '4', chordQuality: '7', formula: ["1", "T9", "3", "S4", "5", "T13", "b7"], details: "Dominante del bVII grado." }
+        ]
+      }
+    };
+
+    const GENERATOR_NO_CENTER_DATA = {
+      todas: {
+        title: "Todas las Escalas",
+        options: [
+          { name: "Jónico", rootInterval: '1', chordQuality: 'Maj7', formula: ["1", "T9", "3", "S4", "5", "T13", "7"] },
+          { name: "Dórico", rootInterval: '1', chordQuality: 'm7', formula: ["1", "T9", "b3", "T11", "5", "S6", "b7"] },
+          { name: "Frigio", rootInterval: '1', chordQuality: 'm7', formula: ["1", "Sb2", "b3", "T11", "5", "Sb6", "b7"] },
+          { name: "Lidio", rootInterval: '1', chordQuality: 'Maj7', formula: ["1", "T9", "3", "T#11", "5", "T13", "7"] },
+          { name: "Mixolidio", rootInterval: '1', chordQuality: '7', formula: ["1", "T9", "3", "S4", "5", "T13", "b7"] },
+          { name: "Eólico", rootInterval: '1', chordQuality: 'm7', formula: ["1", "T9", "b3", "T11", "5", "Sb6", "b7"] },
+          { name: "Locrio", rootInterval: '1', chordQuality: 'm7b5', formula: ["1", "Sb2", "b3", "T11", "b5", "Sb6", "b7"] },
+          { name: "Menor Armónica", rootInterval: '1', chordQuality: 'mMaj7', formula: ["1", "T9", "b3", "T11", "5", "Sb6", "7"] },
+          { name: "Menor Melódica", rootInterval: '1', chordQuality: 'mMaj7', formula: ["1", "T9", "b3", "T11", "5", "T13", "7"] },
+          { name: "Armónica Disminuida", rootInterval: '1', chordQuality: '°7', formula: ["1", "Sb2", "b3", "Sb4", "b5", "Tb13", "°7"] },
+          { name: "Mixolidia b13", rootInterval: '1', chordQuality: '7', formula: ["1", "T9", "3", "S4", "5", "Tb13", "b7"] },
+          { name: "Mixolidia b9 b13", rootInterval: '1', chordQuality: '7', formula: ["1", "Tb9", "3", "S4", "5", "Tb13", "b7"] },
+          { name: "Mixolidia (b9)", rootInterval: '1', chordQuality: '7(b9)', formula: ["1", "Tb9", "3", "S4", "5", "T13", "b7"] },
+          { name: "Mixolidia (b9, #9, b13)", rootInterval: '1', chordQuality: '7(b9,#9,b13)', formula: ["1", "Tb9", "T#9", "3", "S4", "5", "Tb13", "b7"] },
+          { name: "Escala Alterada", rootInterval: '1', chordQuality: '7alt', formula: ["1", "Tb9", "T#9", "3", "b5", "Tb13", "b7"] },
+          { name: "Hexáfona (Tonos Enteros)", rootInterval: '1', chordQuality: '+7', formula: ["1", "T9", "3", "T#11", "T#5", "b7"] },
+          { name: "Dominante de 8 Notas", rootInterval: '1', chordQuality: '7(dim)', formula: ["1", "Tb9", "T#9", "3", "T#11", "5", "T13", "b7"] }
         ]
       }
     };
@@ -480,7 +503,7 @@
                    {needsLedgerTop && y <= 20 && <line x1={x-15} y1="20" x2={x+15} y2="20" stroke="#1e293b" strokeWidth="1.5" />}
                    {needsLedgerTop && y <= 10 && <line x1={x-15} y1="10" x2={x+15} y2="10" stroke="#1e293b" strokeWidth="1.5" />}
                    {note.displayAccidental && (
-                     <text x={x - 32} y={y} fontSize="22" fontFamily="serif" fill="#1e293b" fontWeight="bold" dominantBaseline="central">{note.displayAccidental}</text>
+                     <text x={x - 14} y={y} fontSize="22" fontFamily="serif" fill="#1e293b" fontWeight="bold" dominantBaseline="central" textAnchor="end">{note.displayAccidental}</text>
                    )}
                    <ellipse cx={x} cy={y} rx="9" ry="6" transform={`rotate(-15 ${x} ${y})`} fill={color} />
                  </g>
@@ -575,7 +598,7 @@
     };
 
     function ScaleGenerator({ onBack }) {
-      const [appMode, setAppMode] = useState(null); // 'mayor', 'menor'
+      const [appMode, setAppMode] = useState(null); // 'mayor', 'menor', 'sin_centro'
       const [keySignature, setKeySignature] = useState('C'); 
       const [category, setCategory] = useState('diatonic');
       const [selectedScaleIndex, setSelectedScaleIndex] = useState(0);
@@ -589,14 +612,18 @@
           setKeySignature('A');
           setCategory('diatonic');
           setSelectedScaleIndex(0);
+        } else if (appMode === 'sin_centro') {
+          setKeySignature('C');
+          setCategory('todas');
+          setSelectedScaleIndex(0);
         }
       }, [appMode]);
 
-      const activeKeys = appMode === 'mayor' ? KEYS_MAYOR : (appMode === 'menor' ? KEYS_MENOR : []);
-      const activeData = appMode === 'mayor' ? GENERATOR_MAYOR_DATA : GENERATOR_MINOR_DATA;
+      const activeKeys = appMode === 'mayor' ? KEYS_MAYOR : (appMode === 'menor' ? KEYS_MENOR : KEYS_MAYOR);
+      const activeData = appMode === 'mayor' ? GENERATOR_MAYOR_DATA : (appMode === 'menor' ? GENERATOR_MINOR_DATA : GENERATOR_NO_CENTER_DATA);
       const activeKeySignatures = appMode === 'mayor' ? KEY_SIGNATURES_MAYOR : KEY_SIGNATURES_MENOR;
 
-      const currentCategory = activeData[category] ? activeData[category] : activeData['diatonic'];
+      const currentCategory = activeData[category] ? activeData[category] : activeData[Object.keys(activeData)[0]];
       const currentScale = currentCategory.options[selectedScaleIndex] || currentCategory.options[0];
 
       const actualRoot = useMemo(() => {
@@ -638,14 +665,17 @@
 
             <section className="flex-grow flex flex-col items-center justify-center py-12 px-4">
                 <div className="bg-slate-800 rounded-2xl p-8 md:p-12 shadow-2xl border border-slate-700 text-center w-full max-w-lg">
-                    <h2 className="text-3xl font-extrabold text-white mb-2">Elige tu modo</h2>
-                    <p className="text-slate-400 mb-8">Selecciona qué tipo de tonalidad deseas calcular hoy.</p>
+                    <h2 className="text-3xl font-extrabold text-white mb-2">Elige tu opción</h2>
+                    <p className="text-slate-400 mb-8">Selecciona qué tipo de análisis deseas calcular hoy.</p>
                     <div className="flex flex-col gap-4">
                         <button onClick={() => setAppMode('mayor')} className="bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white px-6 py-5 rounded-xl font-bold transition-all shadow-lg text-xl flex items-center justify-center gap-3">
                             <Play className="w-5 h-5 fill-current" /> Modo Mayor
                         </button>
                         <button onClick={() => setAppMode('menor')} className="bg-gradient-to-r from-purple-600 to-pink-500 hover:from-purple-500 hover:to-pink-400 text-white px-6 py-5 rounded-xl font-bold transition-all shadow-lg text-xl flex items-center justify-center gap-3">
                             <Play className="w-5 h-5 fill-current" /> Modo Menor
+                        </button>
+                        <button onClick={() => setAppMode('sin_centro')} className="bg-gradient-to-r from-amber-600 to-orange-500 hover:from-amber-500 hover:to-orange-400 text-white px-6 py-5 rounded-xl font-bold transition-all shadow-lg text-xl flex items-center justify-center gap-3">
+                            <Play className="w-5 h-5 fill-current" /> Sin Centro Tonal
                         </button>
                     </div>
                 </div>
@@ -654,13 +684,15 @@
         );
       }
 
+      const currentKeySig = appMode === 'sin_centro' ? {} : activeKeySignatures[keySignature];
+
       return (
         <div className="min-h-screen bg-slate-900 text-slate-50 flex flex-col animate-in fade-in duration-500">
           <header className="bg-slate-900 border-b border-slate-800 p-6 shadow-lg">
             <div className="max-w-4xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
               <div>
                 <h1 className="text-2xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">
-                  Armonía III: Modo {appMode === 'mayor' ? 'Mayor' : 'Menor'}
+                  Armonía III: Generador de Escalas
                 </h1>
                 <p className="text-slate-400 text-sm mt-1">
                   Calculadora Automática &bull; <span className="text-slate-300 font-medium">Profesor Marcelo Melipil J.</span>
@@ -676,7 +708,7 @@
             <div className="grid md:grid-cols-12 gap-6">
               <div className="md:col-span-4 lg:col-span-3 bg-slate-800 p-6 rounded-2xl shadow-xl border border-slate-700">
                 <label className="block text-xs font-bold text-slate-400 uppercase mb-4">
-                  1. Tonalidad {appMode === 'mayor' ? 'Mayor' : 'Menor'}
+                  1. {appMode === 'sin_centro' ? 'Fundamental' : `Tonalidad ${appMode === 'mayor' ? 'Mayor' : 'Menor'}`}
                 </label>
                 <div className="flex flex-wrap gap-2 justify-center">
                   {activeKeys.map(note => (
@@ -694,23 +726,28 @@
               </div>
 
               <div className="md:col-span-8 lg:col-span-9 bg-slate-800 p-6 rounded-2xl shadow-xl border border-slate-700 flex flex-col">
-                <label className="block text-xs font-bold text-slate-400 uppercase mb-4">2. Función Armónica</label>
-                <div className="flex flex-wrap gap-2 mb-6 border-b border-slate-700 pb-4">
-                  {Object.entries(activeData).map(([key, data]) => (
-                    <button
-                      key={key}
-                      onClick={() => { setCategory(key); setSelectedScaleIndex(0); }}
-                      className={`px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2 transition-all ${
-                        category === key || (!activeData[category] && key === 'diatonic')
-                          ? 'bg-cyan-900/50 text-cyan-300 ring-2 ring-cyan-500' 
-                          : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
-                      }`}
-                    >
-                      {(category === key || (!activeData[category] && key === 'diatonic')) && <div className="w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.8)]" />}
-                      {data.title}
-                    </button>
-                  ))}
-                </div>
+                <label className="block text-xs font-bold text-slate-400 uppercase mb-4">
+                  2. {appMode === 'sin_centro' ? 'Escala' : 'Función Armónica'}
+                </label>
+                
+                {appMode !== 'sin_centro' && (
+                  <div className="flex flex-wrap gap-2 mb-6 border-b border-slate-700 pb-4">
+                    {Object.entries(activeData).map(([key, data]) => (
+                      <button
+                        key={key}
+                        onClick={() => { setCategory(key); setSelectedScaleIndex(0); }}
+                        className={`px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2 transition-all ${
+                          category === key || (!activeData[category] && key === Object.keys(activeData)[0])
+                            ? 'bg-cyan-900/50 text-cyan-300 ring-2 ring-cyan-500' 
+                            : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+                        }`}
+                      >
+                        {(category === key || (!activeData[category] && key === Object.keys(activeData)[0])) && <div className="w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.8)]" />}
+                        {data.title}
+                      </button>
+                    ))}
+                  </div>
+                )}
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                   {currentCategory.options.map((opt, idx) => (
@@ -738,7 +775,7 @@
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div>
                     <span className="text-xs font-bold text-cyan-400 uppercase tracking-widest mb-2 block">
-                      Tonalidad de {keySignature} {appMode === 'mayor' ? 'Mayor' : 'Menor'}
+                      {appMode === 'sin_centro' ? 'Sin Centro Tonal' : `Tonalidad de ${keySignature} ${appMode === 'mayor' ? 'Mayor' : 'Menor'}`}
                     </span>
                     <h2 className="text-3xl font-extrabold text-white flex flex-wrap items-center gap-3">
                       <span className="text-cyan-300 bg-cyan-900/30 px-3 py-1 rounded-lg border border-cyan-800/50">
@@ -755,10 +792,12 @@
                     </button>
                   </div>
                 </div>
-                <p className="mt-6 text-sm text-slate-300 bg-slate-900/50 p-4 rounded-xl border-l-4 border-cyan-500 shadow-inner leading-relaxed">
-                  <span className="font-semibold text-cyan-400 mr-2">Descripción:</span>
-                  {currentScale.details}
-                </p>
+                {appMode !== 'sin_centro' && (
+                  <p className="mt-6 text-sm text-slate-300 bg-slate-900/50 p-4 rounded-xl border-l-4 border-cyan-500 shadow-inner leading-relaxed">
+                    <span className="font-semibold text-cyan-400 mr-2">Descripción:</span>
+                    {currentScale.details}
+                  </p>
+                )}
               </div>
 
               <div className="p-6 md:p-8 flex flex-col items-center">
@@ -767,7 +806,7 @@
                   <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4 flex items-center gap-2">
                     <Music className="w-4 h-4" /> Notación Musical
                   </h3>
-                  <StaffDisplay keySigMap={activeKeySignatures[keySignature]} notes={calculatedNotes} />
+                  <StaffDisplay keySigMap={currentKeySig} notes={calculatedNotes} />
                 </div>
                 
                 <div className="flex flex-wrap justify-center gap-3 mb-10 w-full max-w-4xl">
@@ -800,6 +839,65 @@
     // ============================================================================
     // --- MÓDULO 2: PRÁCTICA DE ARMONÍA ---
     // ============================================================================
+
+    // Generador dinámico de retos basado en la teoría
+    const generateChallengesForKey = (key, mode) => {
+        const data = mode === 'mayor' ? GENERATOR_MAYOR_DATA : GENERATOR_MINOR_DATA;
+        let challenges = [];
+
+        const LETTER_TO_ROW = { 'C': 14, 'D': 13, 'E': 12, 'F': 11, 'G': 10, 'A': 16, 'B': 15 };
+
+        const processCategory = (catOptions) => {
+            catOptions.forEach(opt => {
+                const rootNote = getSpelledNote(key, opt.rootInterval); 
+                if (rootNote === '?') return; 
+
+                const rootLetter = rootNote.charAt(0);
+                const rootRow = LETTER_TO_ROW[rootLetter]; 
+
+                let solucion = [];
+                let notasTextArr = [];
+                const formulaWithOctave = [...opt.formula, '8'];
+
+                formulaWithOctave.forEach((interval, i) => {
+                    const currentNote = getSpelledNote(rootNote, interval); 
+                    const currentLetter = currentNote.charAt(0);
+                    const currentAcc = currentNote.slice(1);
+                    
+                    const currentRow = rootRow - i;
+
+                    solucion.push({ row: currentRow, acc: currentAcc });
+                    
+                    let accDisplay = currentAcc.replace('b', '♭').replace('#', '♯');
+                    if (currentAcc === 'bb') accDisplay = '♭♭';
+                    if (currentAcc === 'x') accDisplay = '𝄪'; 
+                    notasTextArr.push(currentLetter + accDisplay);
+                });
+
+                let titleName = opt.name;
+                if (opt.name.includes(" Grado (")) {
+                    const parts = opt.name.split(" Grado ("); 
+                    titleName = `${parts[1].replace(')', '')} (${parts[0]})`;
+                } else if (opt.name.includes(" (")) {
+                    const parts = opt.name.split(" (");
+                    titleName = `${parts[1].replace(')', '')} (${parts[0]})`;
+                }
+
+                challenges.push({
+                    titulo: `${rootNote} ${titleName}`,
+                    notasText: notasTextArr.join(" - "),
+                    solucion: solucion,
+                    rootRow: rootRow,
+                    formula: formulaWithOctave 
+                });
+            });
+        };
+
+        if (data.diatonic) processCategory(data.diatonic.options);
+        if (data.secondary) processCategory(data.secondary.options);
+
+        return challenges;
+    };
 
     const nomenclaturasMayor = [
       { nombre: "Jónica (I)", grados: ["1", "T9", "3", "S4", "5", "T13", "7", "1"] },
@@ -842,116 +940,10 @@
       ["1"]                                      
     ];
 
-    const formulasPorModo = {
-      "Jónico (I)": ["1", "T9", "3", "S4", "5", "T13", "7", "1"],
-      "Dórico (IIm)": ["1", "T9", "b3", "T11", "5", "S6", "b7", "1"],
-      "Frigio (IIIm)": ["1", "Sb2", "b3", "T11", "5", "Sb6", "b7", "1"],
-      "Lidio (IV)": ["1", "T9", "3", "T#11", "5", "T13", "7", "1"],
-      "Mixolidio (V7) (V7/IV) (V7/V)": ["1", "T9", "3", "S4", "5", "T13", "b7", "1"],
-      "Mixolidio (V7sus4)": ["1", "T9", "S3", "4", "5", "T13", "b7", "1"],
-      "Eólico (VIm)": ["1", "T9", "b3", "T11", "5", "Sb6", "b7", "1"],
-      "Locrio (VIIm7b5)": ["1", "Sb2", "b3", "T11", "b5", "Sb6", "b7", "1"],
-      "Mixolidio b13 (V7/II)": ["1", "T9", "3", "S4", "5", "Tb13", "b7", "1"],
-      "Mixolidio b9 b13 (V7/III) (V7/VI)": ["1", "Tb9", "3", "S4", "5", "Tb13", "b7", "1"],
-      "Eólico (Im7)": ["1", "T9", "b3", "T11", "5", "Sb6", "b7", "1"],
-      "Dórico (Im6)": ["1", "T9", "b3", "T11", "5", "6", "Sb7", "1"],
-      "Dórico (IVm7)": ["1", "T9", "b3", "T11", "5", "T13", "b7", "1"],
-      "Menor Melódica (ImMaj7)": ["1", "T9", "b3", "T11", "5", "T13", "7", "1"],
-      "Locrio (IIm7b5)": ["1", "Sb2", "b3", "T11", "b5", "Sb6", "b7", "1"],
-      "Jónico (bIIImaj7)": ["1", "T9", "3", "S4", "5", "T13", "7", "1"],
-      "Mixolidio b9 b13 (V7(b9))": ["1", "Tb9", "3", "S4", "5", "Tb13", "b7", "1"],
-      "Frigio (Vm7)": ["1", "Sb2", "b3", "T11", "5", "Sb6", "b7", "1"],
-      "Lidio (bVImaj7)": ["1", "T9", "3", "T#11", "5", "T13", "7", "1"],
-      "Mixolidio (bVII7)": ["1", "T9", "3", "S4", "5", "T13", "b7", "1"],
-      "Armónica Disminuida (VII°7)": ["1", "Sb2", "b3", "Sb4", "b5", "Tb13", "°7", "1"],
-      "Mixolidio b13 (V7/IV)": ["1", "T9", "3", "S4", "5", "Tb13", "b7", "1"],
-      "Mixolidio b9 b13 (V7/V)": ["1", "Tb9", "3", "S4", "5", "Tb13", "b7", "1"],
-      "Mixolidio (V7/VI) (V7/VII)": ["1", "T9", "3", "S4", "5", "T13", "b7", "1"]
-    };
-
     const rowToMidiAudio = {
       16: 57, 15: 59, 14: 60, 13: 62, 12: 64, 11: 65, 10: 67, 9: 69,
       8: 71, 7: 72, 6: 74, 5: 76, 4: 77, 3: 79, 2: 81, 1: 83, 0: 84
     };
-
-    const rootNotes = [
-      { name: "C", noteIndex: 0, row: 14, baseMidi: 60 },
-      { name: "D", noteIndex: 1, row: 13, baseMidi: 62 },
-      { name: "Eb", noteIndex: 2, row: 12, baseMidi: 63 },
-      { name: "E", noteIndex: 2, row: 12, baseMidi: 64 },
-      { name: "F", noteIndex: 3, row: 11, baseMidi: 65 },
-      { name: "G", noteIndex: 4, row: 10, baseMidi: 67 },
-      { name: "A", noteIndex: 5, row: 16, baseMidi: 57 },
-      { name: "Bb", noteIndex: 6, row: 15, baseMidi: 58 },
-      { name: "B", noteIndex: 6, row: 15, baseMidi: 59 }
-    ];
-
-    const baseScalesMayor = [
-      { name: "Jónico (I)", intervals: [0, 2, 4, 5, 7, 9, 11, 12] },
-      { name: "Dórico (IIm)", intervals: [0, 2, 3, 5, 7, 9, 10, 12] },
-      { name: "Frigio (IIIm)", intervals: [0, 1, 3, 5, 7, 8, 10, 12] },
-      { name: "Lidio (IV)", intervals: [0, 2, 4, 6, 7, 9, 11, 12] },
-      { name: "Mixolidio (V7) (V7/IV) (V7/V)", intervals: [0, 2, 4, 5, 7, 9, 10, 12] },
-      { name: "Mixolidio (V7sus4)", intervals: [0, 2, 4, 5, 7, 9, 10, 12] },
-      { name: "Eólico (VIm)", intervals: [0, 2, 3, 5, 7, 8, 10, 12] },
-      { name: "Locrio (VIIm7b5)", intervals: [0, 1, 3, 5, 6, 8, 10, 12] },
-      { name: "Mixolidio b13 (V7/II)", intervals: [0, 2, 4, 5, 7, 8, 10, 12] },
-      { name: "Mixolidio b9 b13 (V7/III) (V7/VI)", intervals: [0, 1, 4, 5, 7, 8, 10, 12] }
-    ];
-
-    const baseScalesMenor = [
-      { name: "Eólico (Im7)", intervals: [0, 2, 3, 5, 7, 8, 10, 12] },
-      { name: "Dórico (Im6)", intervals: [0, 2, 3, 5, 7, 9, 10, 12] },
-      { name: "Dórico (IVm7)", intervals: [0, 2, 3, 5, 7, 9, 10, 12] },
-      { name: "Menor Melódica (ImMaj7)", intervals: [0, 2, 3, 5, 7, 9, 11, 12] },
-      { name: "Locrio (IIm7b5)", intervals: [0, 1, 3, 5, 6, 8, 10, 12] },
-      { name: "Jónico (bIIImaj7)", intervals: [0, 2, 4, 5, 7, 9, 11, 12] },
-      { name: "Mixolidio b9 b13 (V7(b9))", intervals: [0, 1, 4, 5, 7, 8, 10, 12] },
-      { name: "Frigio (Vm7)", intervals: [0, 1, 3, 5, 7, 8, 10, 12] },
-      { name: "Lidio (bVImaj7)", intervals: [0, 2, 4, 6, 7, 9, 11, 12] },
-      { name: "Mixolidio (bVII7)", intervals: [0, 2, 4, 5, 7, 9, 10, 12] },
-      { name: "Armónica Disminuida (VII°7)", intervals: [0, 1, 3, 4, 6, 8, 9, 12] },
-      { name: "Mixolidio b13 (V7/IV)", intervals: [0, 2, 4, 5, 7, 8, 10, 12] },
-      { name: "Mixolidio b9 b13 (V7/V)", intervals: [0, 1, 4, 5, 7, 8, 10, 12] },
-      { name: "Mixolidio (V7/VI) (V7/VII)", intervals: [0, 2, 4, 5, 7, 9, 10, 12] }
-    ];
-
-    const noteNames = ["Do", "Re", "Mi", "Fa", "Sol", "La", "Si"];
-
-    const buildChallenges = (baseScalesList) => {
-      let outputList = [];
-      rootNotes.forEach(root => {
-          baseScalesList.forEach(scale => {
-              let solucion = [];
-              let notasTextArr = [];
-              for (let i = 0; i < 8; i++) {
-                  let currentNoteIndex = (root.noteIndex + i) % 7;
-                  let currentRow = root.row - i;
-                  let targetMidi = root.baseMidi + scale.intervals[i];
-                  let naturalMidi = rowToMidiAudio[currentRow];
-                  let diff = targetMidi - naturalMidi;
-                  let acc = '';
-                  let accText = '';
-                  if (diff === 1) { acc = '#'; accText = '♯'; }
-                  else if (diff === -1) { acc = 'b'; accText = '♭'; }
-                  else if (diff === 2) { acc = 'x'; accText = 'x'; }
-                  else if (diff === -2) { acc = 'bb'; accText = '♭♭'; }
-                  solucion.push({ row: currentRow, acc: acc });
-                  notasTextArr.push(noteNames[currentNoteIndex] + accText);
-              }
-              outputList.push({
-                  titulo: `${root.name} ${scale.name}`,
-                  notasText: notasTextArr.join(" - "),
-                  solucion: solucion,
-                  rootRow: root.row
-              });
-          });
-      });
-      return outputList;
-    };
-
-    const retosMayor = buildChallenges(baseScalesMayor);
-    const retosMenor = buildChallenges(baseScalesMenor);
 
     function HarmonyPractice({ onBack }) {
       const [appMode, setAppMode] = useState(null); 
@@ -960,15 +952,17 @@
       const [nomStats, setNomStats] = useState({ correct: 0, total: 0 });
       const [pentStats, setPentStats] = useState({ correct: 0, total: 0 });
 
+      const [selectedPracticeKey, setSelectedPracticeKey] = useState('Aleatorio');
+
       const activeNomenclaturas = appMode === 'mayor' ? nomenclaturasMayor : nomenclaturasMenor;
-      const activeRetos = appMode === 'mayor' ? retosMayor : retosMenor;
+      const activeKeys = appMode === 'mayor' ? KEYS_MAYOR : KEYS_MENOR;
 
       const [currentNomIndex, setCurrentNomIndex] = useState(0);
       const [nomSelections, setNomSelections] = useState(["1", "-", "-", "-", "-", "-", "-", "1"]);
       const [nomValidation, setNomValidation] = useState(Array(8).fill(null));
       const [nomFeedback, setNomFeedback] = useState({ visible: false, message: '', type: '' });
 
-      const [currentPentIndex, setCurrentPentIndex] = useState(0);
+      const [currentPentChallenge, setCurrentPentChallenge] = useState(null);
       const [staffState, setStaffState] = useState(Array(8).fill({ row: 0, acc: '' }));
       const [pentValidation, setPentValidation] = useState(Array(8).fill(null)); 
       const [pentFeedback, setPentFeedback] = useState({ visible: false, message: '', type: '' });
@@ -977,8 +971,9 @@
         if (appMode) {
           setNomStats({ correct: 0, total: 0 });
           setPentStats({ correct: 0, total: 0 });
+          setSelectedPracticeKey('Aleatorio');
           handleNextNom();
-          handleNextPent();
+          handleNextPent('Aleatorio');
         }
       }, [appMode]);
 
@@ -1016,24 +1011,41 @@
         }
       };
 
-      const handleNextPent = () => {
-        if (!activeRetos || activeRetos.length === 0) return;
-        let prev = currentPentIndex;
-        let nextIdx;
-        do {
-            nextIdx = Math.floor(Math.random() * activeRetos.length);
-        } while (nextIdx === prev && activeRetos.length > 1);
+      const handleNextPent = (overrideKey) => {
+        const keyToUse = overrideKey !== undefined ? overrideKey : selectedPracticeKey;
         
-        setCurrentPentIndex(nextIdx);
-        const retoActual = activeRetos[nextIdx];
+        let targetKey = keyToUse;
+        if (keyToUse === 'Aleatorio') {
+            targetKey = activeKeys[Math.floor(Math.random() * activeKeys.length)];
+        }
+
+        const retosForKey = generateChallengesForKey(targetKey, appMode);
+        
+        if (retosForKey.length === 0) return;
+
+        let nextChallenge;
+        if (retosForKey.length > 1 && currentPentChallenge) {
+            do {
+                nextChallenge = retosForKey[Math.floor(Math.random() * retosForKey.length)];
+            } while (nextChallenge.titulo === currentPentChallenge.titulo);
+        } else {
+            nextChallenge = retosForKey[Math.floor(Math.random() * retosForKey.length)];
+        }
+        
+        setCurrentPentChallenge(nextChallenge);
         
         let newStaffState = [];
         for(let i=0; i<8; i++) {
-            newStaffState.push({ row: retoActual.rootRow - i, acc: '' });
+            newStaffState.push({ row: nextChallenge.rootRow - i, acc: '' });
         }
         setStaffState(newStaffState);
         setPentValidation(Array(8).fill(null));
         setPentFeedback({ visible: false, message: '', type: '' });
+      };
+
+      const handleKeyChange = (newKey) => {
+        setSelectedPracticeKey(newKey);
+        handleNextPent(newKey);
       };
 
       const cycleAccidental = (colIndex) => {
@@ -1051,7 +1063,7 @@
       };
 
       const checkPentagrama = () => {
-        const expected = activeRetos[currentPentIndex].solucion;
+        const expected = currentPentChallenge.solucion;
         let allCorrect = true;
         let newValidation = [...pentValidation];
 
@@ -1069,7 +1081,7 @@
             setPentFeedback({ visible: true, message: '¡Perfecto! Has escrito la escala correctamente.', type: 'success' });
             setPentStats(prev => ({ correct: prev.correct + 1, total: prev.total + 1 }));
         } else {
-            const notasCorrectas = activeRetos[currentPentIndex].notasText;
+            const notasCorrectas = currentPentChallenge.notasText;
             setPentFeedback({ visible: true, message: `Hay errores. Las notas correctas son: ${notasCorrectas}`, type: 'error' });
             setPentStats(prev => ({ ...prev, total: prev.total + 1 }));
         }
@@ -1111,7 +1123,7 @@
         const now = ctx.currentTime;
 
         let hasNotes = staffState.some(n => n.acc !== '');
-        const notasA_Reproducir = hasNotes ? staffState : activeRetos[currentPentIndex].solucion;
+        const notasA_Reproducir = hasNotes ? staffState : currentPentChallenge.solucion;
 
         notasA_Reproducir.forEach((note, index) => {
             if (note) {
@@ -1167,9 +1179,8 @@
       }
 
       const isNom = currentTab === 'nom';
-      const retoPent = activeRetos[currentPentIndex] || {};
-      const currentModeName = retoPent.titulo ? retoPent.titulo.substring(retoPent.titulo.indexOf(' ') + 1) : '';
-      const formulaPent = formulasPorModo[currentModeName] || [];
+      const retoPent = currentPentChallenge || { titulo: '', formula: [] };
+      const formulaPent = retoPent.formula || [];
 
       return (
         <div className="min-h-screen bg-slate-900 text-slate-50 flex flex-col animate-in fade-in duration-500">
@@ -1266,12 +1277,25 @@
             {!isNom && (
               <section className="block animate-in fade-in">
                 <div className="bg-slate-800 rounded-2xl p-6 md:p-8 shadow-xl border border-slate-700">
-                    <div className="flex justify-between items-center mb-6">
-                        <h2 className="text-xl font-bold text-white">Escritura Musical</h2>
-                        <span className="bg-slate-700 text-blue-300 text-xs px-3 py-1 rounded-full font-mono">{pentStats.correct}/{pentStats.total} correctas</span>
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+                        <div>
+                            <h2 className="text-xl font-bold text-white">Escritura Musical</h2>
+                            <p className="text-slate-400 text-sm mt-1">Dibuja la escala solicitada en el pentagrama.</p>
+                        </div>
+                        <div className="flex items-center gap-3 w-full md:w-auto">
+                            <label className="text-sm text-slate-300 font-semibold whitespace-nowrap">Tonalidad:</label>
+                            <select 
+                                value={selectedPracticeKey} 
+                                onChange={(e) => handleKeyChange(e.target.value)}
+                                className="bg-slate-700 text-white text-sm rounded-lg px-3 py-2 outline-none border border-slate-600 focus:border-cyan-400 w-full md:w-auto cursor-pointer"
+                            >
+                                <option value="Aleatorio">Aleatorio</option>
+                                {activeKeys.map(k => <option key={k} value={k}>{k}</option>)}
+                            </select>
+                            <span className="bg-slate-700 text-blue-300 text-xs px-3 py-2 rounded-lg font-mono whitespace-nowrap border border-slate-600">{pentStats.correct}/{pentStats.total} correctas</span>
+                        </div>
                     </div>
 
-                    <p className="text-slate-300 mb-2">Dibuja la escala solicitada en el pentagrama (incluyendo la octava al final).</p>
                     <p className="text-sm text-cyan-400 mb-6 font-semibold">💡 Tip: Las notas base ya están ubicadas. Toca la columna de una nota o usa los menús de abajo para asignar la alteración que corresponda (♯, ♭, x, ♭♭).</p>
                     
                     <div className="bg-slate-900/50 rounded-xl p-4 md:p-6 border border-slate-700/50 mb-8">
@@ -1397,7 +1421,7 @@
                                 <span>🔊</span> <span className="hidden sm:inline">Reproducir</span>
                             </button>
                         </div>
-                        <button onClick={handleNextPent} className="bg-slate-700 hover:bg-slate-600 text-white px-6 py-3 rounded-lg font-bold transition-colors text-sm md:text-base border border-slate-600">
+                        <button onClick={() => handleNextPent()} className="bg-slate-700 hover:bg-slate-600 text-white px-6 py-3 rounded-lg font-bold transition-colors text-sm md:text-base border border-slate-600">
                             Siguiente ➔
                         </button>
                     </div>
