@@ -367,6 +367,23 @@
           { name: "V7/VI (Mixo b9 b13)", rootInterval: '3', chordQuality: '7', formula: ["1", "Tb9", "3", "S4", "5", "Tb13", "b7"], details: "Dominante del VI grado (su fundamental es el grado III)." }
         ]
       },
+      intercambio: {
+        title: "Intercambio Modal",
+        description: "Acordes prestados de tonalidades paralelas (generalmente del modo menor).",
+        options: [
+          { name: "bIImaj7 (Lidia)", rootInterval: 'Sb2', chordQuality: 'Maj7', formula: ["1", "T9", "3", "T#11", "5", "T13", "7"], details: "Acorde mayor sin fundamental diatónica. La cuarta aumentada genera conexión melódica." },
+          { name: "bIIImaj7 (Lidia)", rootInterval: 'b3', chordQuality: 'Maj7', formula: ["1", "T9", "3", "T#11", "5", "T13", "7"], details: "Acorde mayor de intercambio modal." },
+          { name: "bVImaj7 (Lidia)", rootInterval: 'Sb6', chordQuality: 'Maj7', formula: ["1", "T9", "3", "T#11", "5", "T13", "7"], details: "Acorde mayor de intercambio modal." },
+          { name: "bVIImaj7 (Lidia)", rootInterval: 'b7', chordQuality: 'Maj7', formula: ["1", "T9", "3", "T#11", "5", "T13", "7"], details: "Acorde mayor de intercambio modal." },
+          { name: "bVII7 (Lidia b7)", rootInterval: 'b7', chordQuality: '7', formula: ["1", "T9", "3", "T#11", "5", "T13", "b7"], details: "Intercambio modal dominante." },
+          { name: "Im7 (Dórica)", rootInterval: '1', chordQuality: 'm7', formula: ["1", "T9", "b3", "T11", "5", "T13", "b7"], details: "Acorde menor paralelo, utiliza Dórico." },
+          { name: "IVm6 (Dórica)", rootInterval: '4', chordQuality: 'm6', formula: ["1", "T9", "b3", "T11", "5", "6", "Sb7"], details: "La nota a evitar es la séptima (Sb7) porque está a medio tono de la 6ta mayor." },
+          { name: "IVm7 (Dórica)", rootInterval: '4', chordQuality: 'm7', formula: ["1", "T9", "b3", "T11", "5", "T13", "b7"], details: "Intercambio modal subdominante menor." },
+          { name: "Vm7 (Dórica)", rootInterval: '5', chordQuality: 'm7', formula: ["1", "T9", "b3", "T11", "5", "T13", "b7"], details: "Acorde menor paralelo, utiliza Dórico." },
+          { name: "IIm7b5 (Locria)", rootInterval: 'T9', chordQuality: 'm7b5', formula: ["1", "Sb2", "b3", "T11", "b5", "Sb6", "b7"], details: "Típico en progresiones IIm7b5 - V7(b9)." },
+          { name: "IIm7b5 (Locria ♮9)", rootInterval: 'T9', chordQuality: 'm7b5', formula: ["1", "T9", "b3", "T11", "b5", "Tb13", "b7"], details: "Para cadenciar directo al Imaj7. La 9na natural corresponde a la 3ra de la tonalidad." }
+        ]
+      },
       optional: {
         title: "Escalas Opcionales (para V7)",
         description: "Variaciones armónicas aplicadas al Quinto Grado de la tonalidad seleccionada.",
@@ -841,13 +858,14 @@
     // ============================================================================
 
     // Generador dinámico de retos basado en la teoría
-    const generateChallengesForKey = (key, mode) => {
+    const generateChallengesForKey = (key, mode, filters = { includeSecondary: false, includeModal: false }) => {
+        const { includeSecondary, includeModal } = filters;
         const data = mode === 'mayor' ? GENERATOR_MAYOR_DATA : GENERATOR_MINOR_DATA;
         let challenges = [];
 
         const LETTER_TO_ROW = { 'C': 14, 'D': 13, 'E': 12, 'F': 11, 'G': 10, 'A': 16, 'B': 15 };
 
-        const processCategory = (catOptions) => {
+        const processCategory = (catOptions, categoryName) => {
             catOptions.forEach(opt => {
                 const rootNote = getSpelledNote(key, opt.rootInterval); 
                 if (rootNote === '?') return; 
@@ -888,13 +906,15 @@
                     notasText: notasTextArr.join(" - "),
                     solucion: solucion,
                     rootRow: rootRow,
-                    formula: formulaWithOctave 
+                    formula: formulaWithOctave,
+                    category: categoryName
                 });
             });
         };
 
-        if (data.diatonic) processCategory(data.diatonic.options);
-        if (data.secondary) processCategory(data.secondary.options);
+        if (data.diatonic) processCategory(data.diatonic.options, 'diatonic');
+        if (includeSecondary && data.secondary) processCategory(data.secondary.options, 'secondary');
+        if (includeModal && data.intercambio) processCategory(data.intercambio.options, 'intercambio');
 
         return challenges;
     };
@@ -953,6 +973,8 @@
       const [pentStats, setPentStats] = useState({ correct: 0, total: 0 });
 
       const [selectedPracticeKey, setSelectedPracticeKey] = useState('Aleatorio');
+      const [includeSecondary, setIncludeSecondary] = useState(false);
+      const [includeModal, setIncludeModal] = useState(false);
 
       const activeNomenclaturas = appMode === 'mayor' ? nomenclaturasMayor : nomenclaturasMenor;
       const activeKeys = appMode === 'mayor' ? KEYS_MAYOR : KEYS_MENOR;
@@ -963,6 +985,7 @@
       const [nomFeedback, setNomFeedback] = useState({ visible: false, message: '', type: '' });
 
       const [currentPentChallenge, setCurrentPentChallenge] = useState(null);
+      const [recentCategories, setRecentCategories] = useState([]); // Memoria de categorías
       const [staffState, setStaffState] = useState(Array(8).fill({ row: 0, acc: '' }));
       const [pentValidation, setPentValidation] = useState(Array(8).fill(null)); 
       const [pentFeedback, setPentFeedback] = useState({ visible: false, message: '', type: '' });
@@ -972,8 +995,11 @@
           setNomStats({ correct: 0, total: 0 });
           setPentStats({ correct: 0, total: 0 });
           setSelectedPracticeKey('Aleatorio');
+          setIncludeSecondary(false);
+          setIncludeModal(false);
+          setRecentCategories([]); // Reiniciamos la memoria al cambiar de modo
           handleNextNom();
-          handleNextPent('Aleatorio');
+          handleNextPent('Aleatorio', false, false);
         }
       }, [appMode]);
 
@@ -1011,26 +1037,47 @@
         }
       };
 
-      const handleNextPent = (overrideKey) => {
+      const handleNextPent = (overrideKey, overrideSec, overrideMod) => {
         const keyToUse = overrideKey !== undefined ? overrideKey : selectedPracticeKey;
+        const useSec = overrideSec !== undefined ? overrideSec : includeSecondary;
+        const useMod = overrideMod !== undefined ? overrideMod : includeModal;
         
         let targetKey = keyToUse;
         if (keyToUse === 'Aleatorio') {
             targetKey = activeKeys[Math.floor(Math.random() * activeKeys.length)];
         }
 
-        const retosForKey = generateChallengesForKey(targetKey, appMode);
+        const retosForKey = generateChallengesForKey(targetKey, appMode, { includeSecondary: useSec, includeModal: useMod });
         
         if (retosForKey.length === 0) return;
 
+        // --- SISTEMA ANTI-REPETICIÓN DE CATEGORÍAS (Máximo 2 seguidas) ---
+        let validRetos = retosForKey;
+        if (recentCategories.length >= 2 && recentCategories[0] === recentCategories[1]) {
+            const blockedCategory = recentCategories[0];
+            // Filtramos las escalas que NO sean de la categoría bloqueada
+            const alternativeRetos = retosForKey.filter(r => r.category !== blockedCategory);
+            // Solo aplicamos el filtro si hay otras opciones disponibles
+            if (alternativeRetos.length > 0) {
+                validRetos = alternativeRetos;
+            }
+        }
+
         let nextChallenge;
-        if (retosForKey.length > 1 && currentPentChallenge) {
+        if (validRetos.length > 1 && currentPentChallenge) {
             do {
-                nextChallenge = retosForKey[Math.floor(Math.random() * retosForKey.length)];
+                nextChallenge = validRetos[Math.floor(Math.random() * validRetos.length)];
             } while (nextChallenge.titulo === currentPentChallenge.titulo);
         } else {
-            nextChallenge = retosForKey[Math.floor(Math.random() * retosForKey.length)];
+            nextChallenge = validRetos[Math.floor(Math.random() * validRetos.length)];
         }
+
+        // Actualizamos la memoria para el próximo turno
+        setRecentCategories(prev => {
+            const newHist = [...prev, nextChallenge.category];
+            if (newHist.length > 2) newHist.shift(); // Mantiene solo las últimas 2
+            return newHist;
+        });
         
         setCurrentPentChallenge(nextChallenge);
         
@@ -1294,6 +1341,37 @@
                             </select>
                             <span className="bg-slate-700 text-blue-300 text-xs px-3 py-2 rounded-lg font-mono whitespace-nowrap border border-slate-600">{pentStats.correct}/{pentStats.total} correctas</span>
                         </div>
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-2 mb-6 p-3 bg-slate-900/40 rounded-xl border border-slate-700/50">
+                        <span className="text-xs font-semibold text-slate-400 mr-2 uppercase tracking-wider">Filtros:</span>
+                        <button
+                            onClick={() => {
+                                const newVal = !includeSecondary;
+                                setIncludeSecondary(newVal);
+                                handleNextPent(undefined, newVal, undefined);
+                            }}
+                            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${
+                                includeSecondary ? 'bg-cyan-600 text-white border-cyan-500 shadow-[0_0_8px_rgba(8,145,178,0.6)]' : 'bg-slate-800 text-slate-400 border-slate-600 hover:border-slate-500'
+                            }`}
+                        >
+                            Dominantes Secundarios
+                        </button>
+                        
+                        {appMode === 'mayor' && (
+                            <button
+                                onClick={() => {
+                                    const newVal = !includeModal;
+                                    setIncludeModal(newVal);
+                                    handleNextPent(undefined, undefined, newVal);
+                                }}
+                                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${
+                                    includeModal ? 'bg-emerald-600 text-white border-emerald-500 shadow-[0_0_8px_rgba(5,150,105,0.6)]' : 'bg-slate-800 text-slate-400 border-slate-600 hover:border-slate-500'
+                                }`}
+                            >
+                                Intercambio Modal
+                            </button>
+                        )}
                     </div>
 
                     <p className="text-sm text-cyan-400 mb-6 font-semibold">💡 Tip: Las notas base ya están ubicadas. Toca la columna de una nota o usa los menús de abajo para asignar la alteración que corresponda (♯, ♭, x, ♭♭).</p>
