@@ -367,6 +367,16 @@
           { name: "V7/VI (Mixo b9 b13)", rootInterval: '3', chordQuality: '7', formula: ["1", "Tb9", "3", "S4", "5", "Tb13", "b7"], details: "Dominante del VI grado (su fundamental es el grado III)." }
         ]
       },
+      sustitutos: {
+        title: "Dominantes Sustitutos",
+        description: "Acordes que comparten tritono con el dominante original. Resuelven medio tono hacia abajo.",
+        options: [
+          { name: "subV7 (Lidia b7)", rootInterval: 'Sb2', chordQuality: '7', formula: ["1", "T9", "3", "T#11", "5", "T13", "b7"], details: "Sustituto del V7. Resuelve medio tono descendente al I grado." },
+          { name: "subV7/II (Lidia b7)", rootInterval: 'b3', chordQuality: '7', formula: ["1", "T9", "3", "T#11", "5", "T13", "b7"], details: "Sustituto del V7/II. Resuelve medio tono descendente al II grado." },
+          { name: "subV7/IV (Lidia b7)", rootInterval: 'b5', chordQuality: '7', formula: ["1", "T9", "3", "T#11", "5", "T13", "b7"], details: "Sustituto del V7/IV. Resuelve medio tono descendente al IV grado." },
+          { name: "subV7/V (Lidia b7)", rootInterval: 'Sb6', chordQuality: '7', formula: ["1", "T9", "3", "T#11", "5", "T13", "b7"], details: "Sustituto del V7/V. Resuelve medio tono descendente al V grado." }
+        ]
+      },
       intercambio: {
         title: "Intercambio Modal",
         description: "Acordes prestados de tonalidades paralelas (generalmente del modo menor).",
@@ -424,6 +434,16 @@
           { name: "V7/VI (Mixolidia)", rootInterval: 'b3', chordQuality: '7', formula: ["1", "T9", "3", "S4", "5", "T13", "b7"], details: "Dominante del bVI grado." },
           { name: "V7/VII (Mixolidia)", rootInterval: '4', chordQuality: '7', formula: ["1", "T9", "3", "S4", "5", "T13", "b7"], details: "Dominante del bVII grado." }
         ]
+      },
+      sustitutos: {
+        title: "Dominantes Sustitutos",
+        description: "Acordes que comparten tritono con el dominante original. Resuelven medio tono hacia abajo.",
+        options: [
+          { name: "subV7 (Lidia b7)", rootInterval: 'Sb2', chordQuality: '7', formula: ["1", "T9", "3", "T#11", "5", "T13", "b7"], details: "Sustituto del V7. Resuelve medio tono descendente al Im." },
+          { name: "subV7/II (Lidia b7)", rootInterval: 'b3', chordQuality: '7', formula: ["1", "T9", "3", "T#11", "5", "T13", "b7"], details: "Sustituto del V7/II. Resuelve medio tono descendente al IIm7b5." },
+          { name: "subV7/IV (Lidia b7)", rootInterval: 'b5', chordQuality: '7', formula: ["1", "T9", "3", "T#11", "5", "T13", "b7"], details: "Sustituto del V7/IV. Resuelve medio tono descendente al IVm7." },
+          { name: "subV7/V (Lidia b7)", rootInterval: 'Sb6', chordQuality: '7', formula: ["1", "T9", "3", "T#11", "5", "T13", "b7"], details: "Sustituto del V7/V. Resuelve medio tono descendente al V7(b9)." }
+        ]
       }
     };
 
@@ -441,6 +461,7 @@
           { name: "Menor Armónica", rootInterval: '1', chordQuality: 'mMaj7', formula: ["1", "T9", "b3", "T11", "5", "Sb6", "7"] },
           { name: "Menor Melódica", rootInterval: '1', chordQuality: 'mMaj7', formula: ["1", "T9", "b3", "T11", "5", "T13", "7"] },
           { name: "Armónica Disminuida", rootInterval: '1', chordQuality: '°7', formula: ["1", "Sb2", "b3", "Sb4", "b5", "Tb13", "°7"] },
+          { name: "Lidia b7", rootInterval: '1', chordQuality: '7', formula: ["1", "T9", "3", "T#11", "5", "T13", "b7"] },
           { name: "Mixolidia b13", rootInterval: '1', chordQuality: '7', formula: ["1", "T9", "3", "S4", "5", "Tb13", "b7"] },
           { name: "Mixolidia b9 b13", rootInterval: '1', chordQuality: '7', formula: ["1", "Tb9", "3", "S4", "5", "Tb13", "b7"] },
           { name: "Mixolidia (b9)", rootInterval: '1', chordQuality: '7(b9)', formula: ["1", "Tb9", "3", "S4", "5", "T13", "b7"] },
@@ -858,8 +879,8 @@
     // ============================================================================
 
     // Generador dinámico de retos basado en la teoría
-    const generateChallengesForKey = (key, mode, filters = { includeSecondary: false, includeModal: false }) => {
-        const { includeSecondary, includeModal } = filters;
+    const generateChallengesForKey = (key, mode, filters = { includeSecondary: false, includeSustitutos: false, includeModal: false }) => {
+        const { includeSecondary, includeSustitutos, includeModal } = filters;
         const data = mode === 'mayor' ? GENERATOR_MAYOR_DATA : GENERATOR_MINOR_DATA;
         let challenges = [];
 
@@ -914,6 +935,7 @@
 
         if (data.diatonic) processCategory(data.diatonic.options, 'diatonic');
         if (includeSecondary && data.secondary) processCategory(data.secondary.options, 'secondary');
+        if (includeSustitutos && data.sustitutos) processCategory(data.sustitutos.options, 'sustitutos');
         if (includeModal && data.intercambio) processCategory(data.intercambio.options, 'intercambio');
 
         return challenges;
@@ -929,7 +951,8 @@
       { nombre: "Eólica (VIm)", grados: ["1", "T9", "b3", "T11", "5", "Sb6", "b7", "1"] },
       { nombre: "Locria (VIIm7b5)", grados: ["1", "Sb2", "b3", "T11", "b5", "Sb6", "b7", "1"] },
       { nombre: "Mixolidia b13 (V7/II)", grados: ["1", "T9", "3", "S4", "5", "Tb13", "b7", "1"] },
-      { nombre: "Mixolidia b9 b13 (V7/III) (V7/VI)", grados: ["1", "Tb9", "3", "S4", "5", "Tb13", "b7", "1"] }
+      { nombre: "Mixolidia b9 b13 (V7/III) (V7/VI)", grados: ["1", "Tb9", "3", "S4", "5", "Tb13", "b7", "1"] },
+      { nombre: "Lidia b7 (subV7) (subV7/II) (subV7/IV) (subV7/V)", grados: ["1", "T9", "3", "T#11", "5", "T13", "b7", "1"] }
     ];
 
     const nomenclaturasMenor = [
@@ -946,7 +969,8 @@
       { nombre: "Armónica Disminuida (VII°7)", grados: ["1", "Sb2", "b3", "Sb4", "b5", "Tb13", "°7", "1"] },
       { nombre: "Mixolidia b13 (V7/IV)", grados: ["1", "T9", "3", "S4", "5", "Tb13", "b7", "1"] },
       { nombre: "Mixolidia b9 b13 (V7/V)", grados: ["1", "Tb9", "3", "S4", "5", "Tb13", "b7", "1"] },
-      { nombre: "Mixolidia (V7/VI) (V7/VII)", grados: ["1", "T9", "3", "S4", "5", "T13", "b7", "1"] }
+      { nombre: "Mixolidia (V7/VI) (V7/VII)", grados: ["1", "T9", "3", "S4", "5", "T13", "b7", "1"] },
+      { nombre: "Lidia b7 (subV7) (subV7/II) (subV7/IV) (subV7/V)", grados: ["1", "T9", "3", "T#11", "5", "T13", "b7", "1"] }
     ];
 
     const opcionesPorCasilla = [
@@ -974,6 +998,7 @@
 
       const [selectedPracticeKey, setSelectedPracticeKey] = useState('Aleatorio');
       const [includeSecondary, setIncludeSecondary] = useState(false);
+      const [includeSustitutos, setIncludeSustitutos] = useState(false);
       const [includeModal, setIncludeModal] = useState(false);
 
       const activeNomenclaturas = appMode === 'mayor' ? nomenclaturasMayor : nomenclaturasMenor;
@@ -996,10 +1021,11 @@
           setPentStats({ correct: 0, total: 0 });
           setSelectedPracticeKey('Aleatorio');
           setIncludeSecondary(false);
+          setIncludeSustitutos(false);
           setIncludeModal(false);
           setRecentCategories([]); // Reiniciamos la memoria al cambiar de modo
           handleNextNom();
-          handleNextPent('Aleatorio', false, false);
+          handleNextPent('Aleatorio', false, false, false);
         }
       }, [appMode]);
 
@@ -1037,9 +1063,10 @@
         }
       };
 
-      const handleNextPent = (overrideKey, overrideSec, overrideMod) => {
+      const handleNextPent = (overrideKey, overrideSec, overrideSust, overrideMod) => {
         const keyToUse = overrideKey !== undefined ? overrideKey : selectedPracticeKey;
         const useSec = overrideSec !== undefined ? overrideSec : includeSecondary;
+        const useSust = overrideSust !== undefined ? overrideSust : includeSustitutos;
         const useMod = overrideMod !== undefined ? overrideMod : includeModal;
         
         let targetKey = keyToUse;
@@ -1047,7 +1074,7 @@
             targetKey = activeKeys[Math.floor(Math.random() * activeKeys.length)];
         }
 
-        const retosForKey = generateChallengesForKey(targetKey, appMode, { includeSecondary: useSec, includeModal: useMod });
+        const retosForKey = generateChallengesForKey(targetKey, appMode, { includeSecondary: useSec, includeSustitutos: useSust, includeModal: useMod });
         
         if (retosForKey.length === 0) return;
 
@@ -1349,7 +1376,7 @@
                             onClick={() => {
                                 const newVal = !includeSecondary;
                                 setIncludeSecondary(newVal);
-                                handleNextPent(undefined, newVal, undefined);
+                                handleNextPent(undefined, newVal, undefined, undefined);
                             }}
                             className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${
                                 includeSecondary ? 'bg-cyan-600 text-white border-cyan-500 shadow-[0_0_8px_rgba(8,145,178,0.6)]' : 'bg-slate-800 text-slate-400 border-slate-600 hover:border-slate-500'
@@ -1358,12 +1385,25 @@
                             Dominantes Secundarios
                         </button>
                         
+                        <button
+                            onClick={() => {
+                                const newVal = !includeSustitutos;
+                                setIncludeSustitutos(newVal);
+                                handleNextPent(undefined, undefined, newVal, undefined);
+                            }}
+                            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${
+                                includeSustitutos ? 'bg-indigo-600 text-white border-indigo-500 shadow-[0_0_8px_rgba(79,70,229,0.6)]' : 'bg-slate-800 text-slate-400 border-slate-600 hover:border-slate-500'
+                            }`}
+                        >
+                            Dominantes Sustitutos
+                        </button>
+
                         {appMode === 'mayor' && (
                             <button
                                 onClick={() => {
                                     const newVal = !includeModal;
                                     setIncludeModal(newVal);
-                                    handleNextPent(undefined, undefined, newVal);
+                                    handleNextPent(undefined, undefined, undefined, newVal);
                                 }}
                                 className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${
                                     includeModal ? 'bg-emerald-600 text-white border-emerald-500 shadow-[0_0_8px_rgba(5,150,105,0.6)]' : 'bg-slate-800 text-slate-400 border-slate-600 hover:border-slate-500'
